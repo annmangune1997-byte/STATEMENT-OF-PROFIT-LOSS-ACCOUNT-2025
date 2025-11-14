@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Crispy Chicken Restaurants - Monthly P&L Dashboard 2025</title>
+  <title>Crispy Chicken Restaurants - Full Year P&L Dashboard 2025</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #232323; }
@@ -34,35 +34,36 @@
       table, .dashboard-table {font-size:0.85em;}
       .container{padding:2px;}
     }
+    .fixed-col {position:sticky; left:0; background:#fcfcf9;}
   </style>
   <script>
     // Default row config
-    const months = ["January","February","March","April","May"];
+    const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     const categories = [
-      {label:"Revenue - Food", group:"revenue", default:[0,0,0,0,0]},
-      {label:"Revenue - Beverage", group:"revenue", default:[0,0,0,0,0]},
-      {label:"Revenue - Other", group:"revenue", default:[0,0,0,0,0]},
-      {label:"COGs - Food & Beverage", group:"direct", default:[0,0,0,0,0]},
-      {label:"COGs - Packing & cleaning", group:"direct", default:[0,0,0,0,0]},
-      {label:"Salaries & Allowances", group:"labor", default:[0,0,0,0,0]},
-      {label:"Leave Salary & Gratuity", group:"labor", default:[0,0,0,0,0]},
-      {label:"Air Ticket Expenses", group:"labor", default:[0,0,0,0,0]},
-      {label:"Visa & Labour Expenses", group:"labor", default:[0,0,0,0,0]},
-      {label:"Health Insurance Expense", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Accommodation Rent", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Accommodation Electricity", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Uniforms", group:"labor", default:[0,0,0,0,0]},
-      {label:"Total Overhead", group:"overhead", default:[0,0,0,0,0]},
-      {label:"Advertisement & Business Promotion", group:"admin", default:[0,0,0,0,0]},
-      {label:"Govt Reg. Renewal & License Fee", group:"admin", default:[0,0,0,0,0]},
-      {label:"Restaurant Rental", group:"admin", default:[0,0,0,0,0]},
-      {label:"Employees Cost", group:"admin", default:[0,0,0,0,0]}
+      {label:"Revenue - Food", group:"revenue", default:Array(12).fill(0)},
+      {label:"Revenue - Beverage", group:"revenue", default:Array(12).fill(0)},
+      {label:"Revenue - Other", group:"revenue", default:Array(12).fill(0)},
+      {label:"COGs - Food & Beverage", group:"direct", default:Array(12).fill(0)},
+      {label:"COGs - Packing & cleaning", group:"direct", default:Array(12).fill(0)},
+      {label:"Salaries & Allowances", group:"labor", default:Array(12).fill(0)},
+      {label:"Leave Salary & Gratuity", group:"labor", default:Array(12).fill(0)},
+      {label:"Air Ticket Expenses", group:"labor", default:Array(12).fill(0)},
+      {label:"Visa & Labour Expenses", group:"labor", default:Array(12).fill(0)},
+      {label:"Health Insurance Expense", group:"labor", default:Array(12).fill(0)},
+      {label:"Staff Accommodation Rent", group:"labor", default:Array(12).fill(0)},
+      {label:"Staff Accommodation Electricity", group:"labor", default:Array(12).fill(0)},
+      {label:"Staff Uniforms", group:"labor", default:Array(12).fill(0)},
+      {label:"Total Overhead", group:"overhead", default:Array(12).fill(0)},
+      {label:"Advertisement & Business Promotion", group:"admin", default:Array(12).fill(0)},
+      {label:"Govt Reg. Renewal & License Fee", group:"admin", default:Array(12).fill(0)},
+      {label:"Restaurant Rental", group:"admin", default:Array(12).fill(0)},
+      {label:"Employees Cost", group:"admin", default:Array(12).fill(0)}
     ];
 
     function buildInputsTable() {
-      let header = `<tr><th>Particulars</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>`;
+      let header = `<tr><th class="fixed-col">Particulars</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>`;
       let body = categories.map((cat, idx) =>
-        `<tr>${'<td>'+cat.label+'</td>' +
+        `<tr>${'<td class="fixed-col">'+cat.label+'</td>' +
         months.map((m,midx)=>
           `<td><input type="number" id="cell_${idx}_${midx}" value="${cat.default[midx]}" min="0" step="0.01"></td>`).join("")
         }</tr>`
@@ -136,17 +137,17 @@
       let html = `<div class="dashboard">
         <h2>Monthly P&amp;L Summary (2025)</h2>
         <table class="dashboard-table">
-          <tr><th>Particulars</th><th>Total</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>
-          <tr class="total"><td>Net Sales</td><td>${revTotal.toLocaleString()}</td>${out.netSales.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Material</td><td>${directMaterialTotal.toLocaleString()}</td>${out.directMaterial.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Labor</td><td>${directLaborTotal.toLocaleString()}</td>${out.directLabor.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Material & Labor</td><td>${totalDirectMaterialLabor.toLocaleString()}</td>${out.totalDirect.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Overhead</td><td>${overheadTotal.toLocaleString()}</td>${out.overhead.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr class="highlight"><td>Total Operating Expenses</td><td>${operatingExpenseTotal.toLocaleString()}</td>${out.operatingExpenses.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td colspan="7"></td></tr>
-          <tr class="highlight-green"><td>Gross Profit</td><td>${grossProfitTotal.toLocaleString()}</td>${out.grossProfit.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Admin Expenses</td><td>${adminTotal.toLocaleString()}</td>${out.admin.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr class="highlight-green"><td>EBITDA</td><td>${ebitdaTotal.toLocaleString()}</td>${out.ebitda.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><th class="fixed-col">Particulars</th><th>Total</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>
+          <tr class="total"><td class="fixed-col">Net Sales</td><td>${revTotal.toLocaleString()}</td>${out.netSales.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td class="fixed-col">Total Direct Material</td><td>${directMaterialTotal.toLocaleString()}</td>${out.directMaterial.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td class="fixed-col">Total Direct Labor</td><td>${directLaborTotal.toLocaleString()}</td>${out.directLabor.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td class="fixed-col">Total Direct Material & Labor</td><td>${totalDirectMaterialLabor.toLocaleString()}</td>${out.totalDirect.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td class="fixed-col">Total Overhead</td><td>${overheadTotal.toLocaleString()}</td>${out.overhead.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr class="highlight"><td class="fixed-col">Total Operating Expenses</td><td>${operatingExpenseTotal.toLocaleString()}</td>${out.operatingExpenses.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td colspan="15"></td></tr>
+          <tr class="highlight-green"><td class="fixed-col">Gross Profit</td><td>${grossProfitTotal.toLocaleString()}</td>${out.grossProfit.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td class="fixed-col">Total Admin Expenses</td><td>${adminTotal.toLocaleString()}</td>${out.admin.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr class="highlight-green"><td class="fixed-col">EBITDA</td><td>${ebitdaTotal.toLocaleString()}</td>${out.ebitda.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
         </table>
         <div class="key-notes"><strong>Key Notes:</strong>
           <ul>
@@ -168,9 +169,9 @@
 </head>
 <body onload="init()">
   <div class="container">
-    <h1>📑 Crispy Chicken Restaurants - Monthly P&amp;L Dashboard <span style="font-size:0.55em;color:#666;">2025</span></h1>
+    <h1>📑 Crispy Chicken Restaurants - Full Year P&amp;L Dashboard <span style="font-size:0.55em;color:#666;">2025</span></h1>
     <div class="input-section">
-      <h2>Enter Data for Each Month</h2>
+      <h2>Enter Data for Each Month (All 12 Months)</h2>
       <form onsubmit="event.preventDefault(); calcDashboard();">
         <div id="data_inputs"></div>
         <div class="btn-group">
