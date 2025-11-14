@@ -2,154 +2,184 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>CRISPY CHICKEN RESTAURANTS L.L.C - P&L Statement 2025</title>
+  <title>Crispy Chicken Restaurants - Monthly P&L Dashboard 2025</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #333;}
-    .container { max-width: 1200px; margin: 35px auto; padding: 28px; background: #fff; border-radius: 8px; box-shadow: 0 2px 14px #e7e7e7;}
-    h1 { color: #db2d12; margin-bottom:14px; font-size:2em;}
-    h2 { border-bottom: 2px solid #f9bd24; color: #294567; margin-top:34px; font-size: 1.16em; }
-    table {border-collapse:collapse; width:100%; margin-bottom:24px;}
-    th, td {padding:9px 7px;border-bottom:1px solid #ececec; font-size:1.03em;}
-    th {background: #f9bd24; color: #fff;}
-    tr.section-title td {font-weight:bold;background: #f6f6e2;}
-    tr.total td {font-weight:bold; background: #eaf3ff;}
-    tr.highlight td {background: #fcf0cf;}
-    .number, .pct { text-align:right;}
-    .highlight-green {color: #228c22;}
-    .highlight-red {color: #bb2c1e;}
-    .footer {margin-top:34px;text-align:center;color:#db2d12;}
-    .notes {margin:20px 0; background:#eafbe9;color:#226d40;border-radius:8px;padding:14px;}
-    @media (max-width:900px){.container{padding:11px;}th,td{font-size:.98em;}}
-    @media (max-width:600px){table{font-size:0.92em;}.container{padding:4px;}}
+    body { font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #232323; }
+    .container { max-width: 1200px; margin: 38px auto; padding: 34px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px #dedede;}
+    h1 { color: #db2d12; margin-bottom: 18px;}
+    h2 { font-size: 1.18em; color: #1c2833; margin:24px 0 4px 0;}
+    .input-section { margin:35px 0 20px 0;}
+    .input-table {border-collapse:collapse;width:100%;margin-top:12px;}
+    .input-table th, .input-table td {padding:7px 7px;border-bottom:1px solid #efefef;font-size:1.02em;background:#fcfcf9;}
+    .input-table th {background: #f9bd24; color: #fff; text-align:left;}
+    .input-table input {width:100px;}
+    .btn-group {margin-top:18px;}
+    button { background:#db2d12; color:#fff; font-weight:700; padding:8px 22px; border-radius:7px; border:none; cursor:pointer; font-size:1.09em; margin-right:10px;}
+    button[disabled] {background:#eda899;}
+    .dashboard {background:#eaf3ff;border-radius:8px;padding:24px;margin-top:32px;}
+    .dashboard h2 {margin-top:0;}
+    .dashboard-table {border-collapse:collapse;width:100%;margin-bottom:22px;}
+    .dashboard-table th, .dashboard-table td {padding: 8px 7px; border-bottom:1px solid #ececec;}
+    .dashboard-table th {background: #f9bd24; color: #fff;}
+    .dashboard-table tr.total td {font-weight:bold;background: #fcf0cf;}
+    .dashboard-table tr.highlight td {background: #e8f2d1;font-weight:bold;}
+    .highlight-green {color:#228c22;font-weight:bold;}
+    .key-notes {margin:16px 0; padding:13px; background:#f6f7e8; color:#404120; border-radius:7px;}
+    @media (max-width:900px) {
+      .container{padding:9px;}
+      .input-table th,.input-table td,.dashboard-table th,.dashboard-table td{font-size:.97em;}
+    }
+    @media (max-width:600px) {
+      table, .dashboard-table {font-size:0.85em;}
+      .container{padding:2px;}
+    }
   </style>
+  <script>
+    // Default row config
+    const months = ["January","February","March","April","May"];
+    const categories = [
+      {label:"Revenue - Food", group:"revenue", default:[0,0,0,0,0]},
+      {label:"Revenue - Beverage", group:"revenue", default:[0,0,0,0,0]},
+      {label:"Revenue - Other", group:"revenue", default:[0,0,0,0,0]},
+      {label:"COGs - Food & Beverage", group:"direct", default:[0,0,0,0,0]},
+      {label:"COGs - Packing & cleaning", group:"direct", default:[0,0,0,0,0]},
+      {label:"Salaries & Allowances", group:"labor", default:[0,0,0,0,0]},
+      {label:"Leave Salary & Gratuity", group:"labor", default:[0,0,0,0,0]},
+      {label:"Air Ticket Expenses", group:"labor", default:[0,0,0,0,0]},
+      {label:"Visa & Labour Expenses", group:"labor", default:[0,0,0,0,0]},
+      {label:"Health Insurance Expense", group:"labor", default:[0,0,0,0,0]},
+      {label:"Staff Accommodation Rent", group:"labor", default:[0,0,0,0,0]},
+      {label:"Staff Accommodation Electricity", group:"labor", default:[0,0,0,0,0]},
+      {label:"Staff Uniforms", group:"labor", default:[0,0,0,0,0]},
+      {label:"Total Overhead", group:"overhead", default:[0,0,0,0,0]},
+      {label:"Advertisement & Business Promotion", group:"admin", default:[0,0,0,0,0]},
+      {label:"Govt Reg. Renewal & License Fee", group:"admin", default:[0,0,0,0,0]},
+      {label:"Restaurant Rental", group:"admin", default:[0,0,0,0,0]},
+      {label:"Employees Cost", group:"admin", default:[0,0,0,0,0]}
+    ];
+
+    function buildInputsTable() {
+      let header = `<tr><th>Particulars</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>`;
+      let body = categories.map((cat, idx) =>
+        `<tr>${'<td>'+cat.label+'</td>' +
+        months.map((m,midx)=>
+          `<td><input type="number" id="cell_${idx}_${midx}" value="${cat.default[midx]}" min="0" step="0.01"></td>`).join("")
+        }</tr>`
+      ).join("");
+      return `<table class="input-table">${header}${body}</table>`;
+    }
+
+    function extractValues() {
+      let data = {};
+      categories.forEach((cat, ci) => {
+        let vals = [];
+        for(let mi=0; mi<months.length; ++mi) {
+          let v = parseFloat(document.getElementById(`cell_${ci}_${mi}`).value) || 0;
+          vals.push(v);
+        }
+        data[cat.label]=vals;
+      });
+      return data;
+    }
+
+    function calcDashboard() {
+      let input = extractValues();
+      let out = {};
+      // Revenue: sum food+bev+other
+      out.netSales = months.map((_,i)=>
+        (input["Revenue - Food"][i] + input["Revenue - Beverage"][i] + input["Revenue - Other"][i])
+      );
+      let revTotal = out.netSales.reduce((a,b)=>a+b, 0);
+
+      out.directMaterial = months.map((_,i)=>
+        (input["COGs - Food & Beverage"][i] + input["COGs - Packing & cleaning"][i])
+      );
+      let directMaterialTotal = out.directMaterial.reduce((a,b)=>a+b,0);
+
+      out.directLabor = months.map((_,i)=>
+        (input["Salaries & Allowances"][i] + input["Leave Salary & Gratuity"][i] +
+         input["Air Ticket Expenses"][i] + input["Visa & Labour Expenses"][i] +
+         input["Health Insurance Expense"][i] + input["Staff Accommodation Rent"][i] +
+         input["Staff Accommodation Electricity"][i] + input["Staff Uniforms"][i])
+      );
+      let directLaborTotal = out.directLabor.reduce((a,b)=>a+b,0);
+
+      out.totalDirect = months.map((_,i)=>out.directMaterial[i]+out.directLabor[i]);
+      let totalDirectMaterialLabor = out.totalDirect.reduce((a,b)=>a+b,0);
+
+      out.overhead = input["Total Overhead"];
+      let overheadTotal = out.overhead.reduce((a,b)=>a+b,0);
+
+      out.operatingExpenses = months.map((_,i)=>out.totalDirect[i]+out.overhead[i]);
+      let operatingExpenseTotal = out.operatingExpenses.reduce((a,b)=>a+b,0);
+
+      out.grossProfit = months.map((_,i)=>out.netSales[i]-out.operatingExpenses[i]);
+      let grossProfitTotal = out.grossProfit.reduce((a,b)=>a+b,0);
+
+      out.admin = months.map((_,i)=>
+        (input["Advertisement & Business Promotion"][i] +
+         input["Govt Reg. Renewal & License Fee"][i] +
+         input["Restaurant Rental"][i] +
+         input["Employees Cost"][i])
+      );
+      let adminTotal = out.admin.reduce((a,b)=>a+b,0);
+
+      out.ebitda = months.map((_,i)=>out.grossProfit[i]-out.admin[i]);
+      let ebitdaTotal = out.ebitda.reduce((a,b)=>a+b,0);
+
+      // For notes, margins
+      let grossMargin = revTotal > 0 ? (grossProfitTotal/revTotal)*100 : 0;
+      let ebitdaMargin = revTotal > 0 ? (ebitdaTotal/revTotal)*100 : 0;
+
+      // output HTML table
+      let html = `<div class="dashboard">
+        <h2>Monthly P&amp;L Summary (2025)</h2>
+        <table class="dashboard-table">
+          <tr><th>Particulars</th><th>Total</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>
+          <tr class="total"><td>Net Sales</td><td>${revTotal.toLocaleString()}</td>${out.netSales.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td>Total Direct Material</td><td>${directMaterialTotal.toLocaleString()}</td>${out.directMaterial.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td>Total Direct Labor</td><td>${directLaborTotal.toLocaleString()}</td>${out.directLabor.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td>Total Direct Material & Labor</td><td>${totalDirectMaterialLabor.toLocaleString()}</td>${out.totalDirect.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td>Total Overhead</td><td>${overheadTotal.toLocaleString()}</td>${out.overhead.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr class="highlight"><td>Total Operating Expenses</td><td>${operatingExpenseTotal.toLocaleString()}</td>${out.operatingExpenses.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td colspan="7"></td></tr>
+          <tr class="highlight-green"><td>Gross Profit</td><td>${grossProfitTotal.toLocaleString()}</td>${out.grossProfit.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr><td>Total Admin Expenses</td><td>${adminTotal.toLocaleString()}</td>${out.admin.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+          <tr class="highlight-green"><td>EBITDA</td><td>${ebitdaTotal.toLocaleString()}</td>${out.ebitda.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
+        </table>
+        <div class="key-notes"><strong>Key Notes:</strong>
+          <ul>
+            <li>Gross Profit Margin (total): ${grossMargin.toFixed(2)}%</li>
+            <li>EBITDA Margin (total): ${ebitdaMargin.toFixed(2)}%</li>
+            <li>Quick snapshot for monthly/total profit and expense positions.</li>
+          </ul>
+        </div>
+        <button onclick="window.print()">Print Report</button>
+      </div>`;
+      document.getElementById("dashboard").innerHTML = html;
+    }
+
+    function init() {
+      document.getElementById("data_inputs").innerHTML = buildInputsTable();
+      document.getElementById("dashboard").innerHTML = "";
+    }
+  </script>
 </head>
-<body>
-<div class="container">
-  <h1>CRISPY CHICKEN RESTAURANTS L.L.C<br>STATEMENT OF PROFIT &amp; LOSS ACCOUNT 2025</h1>
-
-  <h2>REVENUE</h2>
-  <table>
-    <tr>
-      <th>Particulars</th><th>Total</th><th>%</th>
-      <th>Jan</th><th>%</th>
-      <th>Feb</th><th>%</th>
-      <th>Mar</th><th>%</th>
-      <th>Apr</th><th>%</th>
-      <th>May</th><th>%</th>
-    </tr>
-    <tr class="section-title"><td>Revenue - Food</td><td class="number">19,041,623.92</td><td class="pct">97.99%</td><td class="number">3,986,409.18</td><td class="pct">98.10%</td><td class="number">3,898,239.47</td><td class="pct">98.08%</td><td class="number">3,047,430.91</td><td class="pct">98.27%</td><td class="number">3,873,829.60</td><td class="pct">97.77%</td><td class="number">4,235,714.76</td><td class="pct">97.80%</td></tr>
-    <tr><td>Revenue - Beverage</td><td class="number">390,568.60</td><td class="pct">2.01%</td><td class="number">77,283.61</td><td class="pct">1.90%</td><td class="number">76,131.90</td><td class="pct">1.92%</td><td class="number">53,513.40</td><td class="pct">1.73%</td><td class="number">88,181.68</td><td class="pct">2.23%</td><td class="number">95,458.01</td><td class="pct">2.20%</td></tr>
-    <tr><td>Revenue - Other</td><td class="number">-</td><td class="pct">-</td><td class="number">-</td><td class="pct">-</td><td class="number">-</td><td class="pct">-</td><td class="number">-</td><td class="pct">-</td><td class="number">-</td><td class="pct">-</td><td class="number">-</td><td class="pct">-</td></tr>
-    <tr class="total"><td>Net Sales</td><td class="number">19,432,192.52</td><td class="pct">100.00%</td><td class="number">4,063,692.79</td><td class="pct">100.00%</td><td class="number">3,974,371.37</td><td class="pct">100.00%</td><td class="number">3,100,944.31</td><td class="pct">100.00%</td><td class="number">3,962,011.28</td><td class="pct">100.00%</td><td class="number">4,331,172.77</td><td class="pct">100.00%</td></tr>
-  </table>
-
-  <h2>DIRECT OPERATING EXPENSES</h2>
-  <table>
-    <tr>
-      <th>Particulars</th><th>Total</th><th>%</th>
-      <th>Jan</th><th>%</th>
-      <th>Feb</th><th>%</th>
-      <th>Mar</th><th>%</th><th>Apr</th><th>%</th>
-      <th>May</th><th>%</th>
-    </tr>
-    <!-- Direct Material -->
-    <tr class="section-title"><td>COGs - Food &amp; Beverage</td><td>8,938,808.56</td><td>46.00%</td><td>1,869,298.68</td><td>46.00%</td><td>1,828,210.83</td><td>46.00%</td><td>1,426,434.38</td><td>46.00%</td><td>1,822,525.19</td><td>46.00%</td><td>1,992,339.47</td><td>46.00%</td></tr>
-    <tr><td>COGs - Packing &amp; cleaning</td><td>777,287.70</td><td>4.00%</td><td>162,547.71</td><td>4.00%</td><td>158,974.85</td><td>4.00%</td><td>124,037.77</td><td>4.00%</td><td>158,480.45</td><td>4.00%</td><td>173,246.91</td><td>4.00%</td></tr>
-    <tr class="total"><td>Total Direct Material</td><td>9,716,096.26</td><td>50.00%</td><td>2,031,846.40</td><td>50.00%</td><td>1,987,185.69</td><td>50.00%</td><td>1,550,472.16</td><td>50.00%</td><td>1,981,005.64</td><td>50.00%</td><td>2,165,586.39</td><td>50.00%</td></tr>
-    <!-- Direct Labor -->
-    <tr class="section-title"><td>Salaries &amp; Allowances</td><td>2,195,512.50</td><td>11.3%</td><td>438,479.50</td><td>10.79%</td><td>464,039.75</td><td>11.68%</td><td>451,663.00</td><td>14.57%</td><td>424,936.50</td><td>10.73%</td><td>416,393.75</td><td>9.61%</td></tr>
-    <tr><td>Leave Salary &amp; Gratuity</td><td>203,486.67</td><td>1.05%</td><td>40,697.33</td><td>1.00%</td><td>40,697.33</td><td>1.02%</td><td>40,697.33</td><td>1.31%</td><td>40,697.33</td><td>1.03%</td><td>40,697.33</td><td>0.94%</td></tr>
-    <tr><td>Air Ticket Expenses</td><td>50,625.00</td><td>0.26%</td><td>10,125.00</td><td>0.25%</td><td>10,125.00</td><td>0.25%</td><td>10,125.00</td><td>0.33%</td><td>10,125.00</td><td>0.26%</td><td>10,125.00</td><td>0.23%</td></tr>
-    <tr><td>Visa &amp; Labour Expenses</td><td>163,541.67</td><td>0.84%</td><td>32,708.33</td><td>0.80%</td><td>32,708.33</td><td>0.82%</td><td>32,708.33</td><td>1.05%</td><td>32,708.33</td><td>0.83%</td><td>32,708.33</td><td>0.76%</td></tr>
-    <tr><td>Health Insurance Expense</td><td>65,416.67</td><td>0.34%</td><td>13,083.33</td><td>0.32%</td><td>13,083.33</td><td>0.33%</td><td>13,083.33</td><td>0.42%</td><td>13,083.33</td><td>0.33%</td><td>13,083.33</td><td>0.30%</td></tr>
-    <tr><td>Staff Accommodation Rent</td><td>102,250.00</td><td>0.53%</td><td>20,450.00</td><td>0.50%</td><td>20,450.00</td><td>0.51%</td><td>20,450.00</td><td>0.66%</td><td>20,450.00</td><td>0.52%</td><td>20,450.00</td><td>0.47%</td></tr>
-    <tr><td>Staff Accommodation Electricity</td><td>2,927.40</td><td>0.02%</td><td>895.22</td><td>0.02%</td><td>909.67</td><td>0.02%</td><td>1,122.51</td><td>0.04%</td><td>-</td><td>0.00%</td><td>-</td><td>0.00%</td></tr>
-    <tr><td>Staff Uniforms</td><td>13,083.33</td><td>0.07%</td><td>2,616.67</td><td>0.06%</td><td>2,616.67</td><td>0.07%</td><td>2,616.67</td><td>0.08%</td><td>2,616.67</td><td>0.07%</td><td>2,616.67</td><td>0.06%</td></tr>
-    <tr class="total"><td>Total Direct Labor</td><td>2,796,843.23</td><td>14.39%</td><td>559,055.39</td><td>13.76%</td><td>584,630.08</td><td>14.71%</td><td>572,466.18</td><td>18.46%</td><td>544,617.17</td><td>13.75%</td><td>536,074.42</td><td>12.38%</td></tr>
-    <!-- Overheads -->
-    <tr class="total"><td>Total Overhead</td><td>2,893,064.57</td><td>14.89%</td><td>534,805.46</td><td>13.16%</td><td>569,432.04</td><td>14.33%</td><td>506,519.08</td><td>16.33%</td><td>617,270.23</td><td>15.58%</td><td>665,037.77</td><td>15.35%</td></tr>
-    <tr class="highlight"><td>TOTAL OPERATING EXPENSES</td><td>15,406,004.07</td><td>79.28%</td><td>3,125,707.25</td><td>76.92%</td><td>3,141,247.81</td><td>79.04%</td><td>2,629,457.41</td><td>84.80%</td><td>3,142,893.04</td><td>79.33%</td><td>3,366,698.57</td><td>77.73%</td></tr>
-  </table>
-
-  <h2>GROSS PROFIT</h2>
-  <table>
-    <tr>
-      <th>Total</th><th>%</th>
-      <th>Jan</th><th>%</th>
-      <th>Feb</th><th>%</th>
-      <th>Mar</th><th>%</th>
-      <th>Apr</th><th>%</th>
-      <th>May</th><th>%</th>
-    </tr>
-    <tr>
-      <td>4,026,188.45</td><td>20.72%</td>
-      <td>937,985.54</td><td>23.08%</td>
-      <td>833,123.56</td><td>20.96%</td>
-      <td>471,486.90</td><td>15.20%</td>
-      <td>819,118.24</td><td>20.67%</td>
-      <td>964,474.20</td><td>22.27%</td>
-    </tr>
-  </table>
-
-  <h2>GENERAL & ADMIN EXPENSES</h2>
-  <table>
-    <tr>
-      <th>Particulars</th><th>Total</th><th>%</th>
-      <th>Jan</th><th>%</th>
-      <th>Feb</th><th>%</th>
-      <th>Mar</th><th>%</th>
-      <th>Apr</th><th>%</th>
-      <th>May</th><th>%</th>
-    </tr>
-    <tr><td>Advertisement &amp; Business Promotion</td><td>198,217.55</td><td>1.02%</td><td>33,859.79</td><td>0.83%</td><td>53,238.63</td><td>1.34%</td><td>28,700.83</td><td>0.93%</td><td>44,467.86</td><td>1.12%</td><td>37,950.44</td><td>0.88%</td></tr>
-    <tr><td>Govt Reg. Renewal &amp; License Fee</td><td>50,000.00</td><td>0.26%</td><td>10,000.00</td><td>0.25%</td><td>10,000.00</td><td>0.25%</td><td>10,000.00</td><td>0.32%</td><td>10,000.00</td><td>0.25%</td><td>10,000.00</td><td>0.23%</td></tr>
-    <tr><td>Restaurant Rental</td><td>910,000.00</td><td>4.68%</td><td>182,000.00</td><td>4.48%</td><td>182,000.00</td><td>4.58%</td><td>182,000.00</td><td>5.87%</td><td>182,000.00</td><td>4.59%</td><td>182,000.00</td><td>4.20%</td></tr>
-    <tr><td>Employees Cost</td><td>186,321.50</td><td>0.96%</td><td>30,758.50</td><td>0.76%</td><td>36,948.50</td><td>0.93%</td><td>38,428.50</td><td>1.24%</td><td>41,187.50</td><td>1.04%</td><td>38,998.50</td><td>0.90%</td></tr>
-    <tr class="total"><td>TOTAL FIXED EXPENSES</td><td>1,344,539.05</td><td>6.92%</td><td>256,618.29</td><td>6.31%</td><td>282,187.13</td><td>7.10%</td><td>259,129.33</td><td>8.36%</td><td>277,655.36</td><td>7.01%</td><td>268,948.94</td><td>6.21%</td></tr>
-  </table>
-
-  <h2>EBITDA / NET PROFIT & LOSS</h2>
-  <table>
-    <tr>
-      <th>Total</th><th>%</th>
-      <th>Jan</th><th>%</th>
-      <th>Feb</th><th>%</th>
-      <th>Mar</th><th>%</th>
-      <th>Apr</th><th>%</th>
-      <th>May</th><th>%</th>
-    </tr>
-    <tr>
-      <td>2,681,649.40</td><td>13.80%</td>
-      <td>681,367.25</td><td>16.77%</td>
-      <td>550,936.43</td><td>13.86%</td>
-      <td>212,357.57</td><td>6.85%</td>
-      <td>541,462.88</td><td>13.67%</td>
-      <td>695,525.26</td><td>16.06%</td>
-    </tr>
-  </table>
-
-  <h2>DAILY SALES, BREAK-EVEN & PROFIT/LOSS</h2>
-  <table>
-    <tr>
-      <th>Type</th><th>Total</th><th>Jan</th><th>Feb</th><th>Mar</th><th>Apr</th><th>May</th>
-    </tr>
-    <tr><td>Daily Average Sales (A)</td><td>160,596.63</td><td>131,086.86</td><td>141,941.83</td><td>100,030.46</td><td>132,067.04</td><td>139,715.25</td></tr>
-    <tr><td>Daily Break-even Point (B)</td><td>138,434.24</td><td>109,107.28</td><td>122,265.53</td><td>93,180.22</td><td>114,018.28</td><td>117,278.95</td></tr>
-    <tr class="highlight-green"><td>Daily P&L Position (A-B)</td><td>22,162.39</td><td>21,979.59</td><td>19,676.30</td><td>6,850.24</td><td>18,048.76</td><td>22,436.30</td></tr>
-  </table>
-
-  <div class="notes">
-    <strong>Key Notes:</strong>
-    <ul>
-      <li>Revenue is food-dominated, with beverages at ~2%.</li>
-      <li>Operating expenses, direct materials, labor, and overhead tracked monthly (+% of net sales).</li>
-      <li>Monthly gross profit and daily break-even/profit position included for management review.</li>
-      <li>EBITDA is positive across periods; daily profit consistently above break-even in all months.</li>
-      <li>Prepared for board, financial management, and operational analysis.</li>
-    </ul>
+<body onload="init()">
+  <div class="container">
+    <h1>📑 Crispy Chicken Restaurants - Monthly P&amp;L Dashboard <span style="font-size:0.55em;color:#666;">2025</span></h1>
+    <div class="input-section">
+      <h2>Enter Data for Each Month</h2>
+      <form onsubmit="event.preventDefault(); calcDashboard();">
+        <div id="data_inputs"></div>
+        <div class="btn-group">
+          <button type="submit">Generate Report & Dashboard</button>
+          <button type="button" onclick="window.print()">Print Blank Form</button>
+        </div>
+      </form>
+    </div>
+    <div id="dashboard"></div>
   </div>
-  <div class="footer">Financial Statement for Executive Review — Export to PDF, Excel, or CSV available via dashboard tools.</div>
-</div>
 </body>
 </html>
