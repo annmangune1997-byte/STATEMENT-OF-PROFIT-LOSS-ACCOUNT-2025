@@ -1,185 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Crispy Chicken Restaurants - Monthly P&L Dashboard 2025</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body { font-family: 'Segoe UI', 'Roboto', Arial, sans-serif; margin: 0; background: #f8f9fa; color: #232323; }
-    .container { max-width: 1200px; margin: 38px auto; padding: 34px; background: #fff; border-radius: 10px; box-shadow: 0 2px 16px #dedede;}
-    h1 { color: #db2d12; margin-bottom: 18px;}
-    h2 { font-size: 1.18em; color: #1c2833; margin:24px 0 4px 0;}
-    .input-section { margin:35px 0 20px 0;}
-    .input-table {border-collapse:collapse;width:100%;margin-top:12px;}
-    .input-table th, .input-table td {padding:7px 7px;border-bottom:1px solid #efefef;font-size:1.02em;background:#fcfcf9;}
-    .input-table th {background: #f9bd24; color: #fff; text-align:left;}
-    .input-table input {width:100px;}
-    .btn-group {margin-top:18px;}
-    button { background:#db2d12; color:#fff; font-weight:700; padding:8px 22px; border-radius:7px; border:none; cursor:pointer; font-size:1.09em; margin-right:10px;}
-    button[disabled] {background:#eda899;}
-    .dashboard {background:#eaf3ff;border-radius:8px;padding:24px;margin-top:32px;}
-    .dashboard h2 {margin-top:0;}
-    .dashboard-table {border-collapse:collapse;width:100%;margin-bottom:22px;}
-    .dashboard-table th, .dashboard-table td {padding: 8px 7px; border-bottom:1px solid #ececec;}
-    .dashboard-table th {background: #f9bd24; color: #fff;}
-    .dashboard-table tr.total td {font-weight:bold;background: #fcf0cf;}
-    .dashboard-table tr.highlight td {background: #e8f2d1;font-weight:bold;}
-    .highlight-green {color:#228c22;font-weight:bold;}
-    .key-notes {margin:16px 0; padding:13px; background:#f6f7e8; color:#404120; border-radius:7px;}
-    @media (max-width:900px) {
-      .container{padding:9px;}
-      .input-table th,.input-table td,.dashboard-table th,.dashboard-table td{font-size:.97em;}
-    }
-    @media (max-width:600px) {
-      table, .dashboard-table {font-size:0.85em;}
-      .container{padding:2px;}
-    }
-  </style>
-  <script>
-    // Default row config
-    const months = ["January","February","March","April","May"];
-    const categories = [
-      {label:"Revenue - Food", group:"revenue", default:[0,0,0,0,0]},
-      {label:"Revenue - Beverage", group:"revenue", default:[0,0,0,0,0]},
-      {label:"Revenue - Other", group:"revenue", default:[0,0,0,0,0]},
-      {label:"COGs - Food & Beverage", group:"direct", default:[0,0,0,0,0]},
-      {label:"COGs - Packing & cleaning", group:"direct", default:[0,0,0,0,0]},
-      {label:"Salaries & Allowances", group:"labor", default:[0,0,0,0,0]},
-      {label:"Leave Salary & Gratuity", group:"labor", default:[0,0,0,0,0]},
-      {label:"Air Ticket Expenses", group:"labor", default:[0,0,0,0,0]},
-      {label:"Visa & Labour Expenses", group:"labor", default:[0,0,0,0,0]},
-      {label:"Health Insurance Expense", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Accommodation Rent", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Accommodation Electricity", group:"labor", default:[0,0,0,0,0]},
-      {label:"Staff Uniforms", group:"labor", default:[0,0,0,0,0]},
-      {label:"Total Overhead", group:"overhead", default:[0,0,0,0,0]},
-      {label:"Advertisement & Business Promotion", group:"admin", default:[0,0,0,0,0]},
-      {label:"Govt Reg. Renewal & License Fee", group:"admin", default:[0,0,0,0,0]},
-      {label:"Restaurant Rental", group:"admin", default:[0,0,0,0,0]},
-      {label:"Employees Cost", group:"admin", default:[0,0,0,0,0]}
-    ];
+<meta charset="UTF-8">
+<title>Corporate Operations Dashboard</title>
 
-    function buildInputsTable() {
-      let header = `<tr><th>Particulars</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>`;
-      let body = categories.map((cat, idx) =>
-        `<tr>${'<td>'+cat.label+'</td>' +
-        months.map((m,midx)=>
-          `<td><input type="number" id="cell_${idx}_${midx}" value="${cat.default[midx]}" min="0" step="0.01"></td>`).join("")
-        }</tr>`
-      ).join("");
-      return `<table class="input-table">${header}${body}</table>`;
-    }
-
-    function extractValues() {
-      let data = {};
-      categories.forEach((cat, ci) => {
-        let vals = [];
-        for(let mi=0; mi<months.length; ++mi) {
-          let v = parseFloat(document.getElementById(`cell_${ci}_${mi}`).value) || 0;
-          vals.push(v);
-        }
-        data[cat.label]=vals;
-      });
-      return data;
-    }
-
-    function calcDashboard() {
-      let input = extractValues();
-      let out = {};
-      // Revenue: sum food+bev+other
-      out.netSales = months.map((_,i)=>
-        (input["Revenue - Food"][i] + input["Revenue - Beverage"][i] + input["Revenue - Other"][i])
-      );
-      let revTotal = out.netSales.reduce((a,b)=>a+b, 0);
-
-      out.directMaterial = months.map((_,i)=>
-        (input["COGs - Food & Beverage"][i] + input["COGs - Packing & cleaning"][i])
-      );
-      let directMaterialTotal = out.directMaterial.reduce((a,b)=>a+b,0);
-
-      out.directLabor = months.map((_,i)=>
-        (input["Salaries & Allowances"][i] + input["Leave Salary & Gratuity"][i] +
-         input["Air Ticket Expenses"][i] + input["Visa & Labour Expenses"][i] +
-         input["Health Insurance Expense"][i] + input["Staff Accommodation Rent"][i] +
-         input["Staff Accommodation Electricity"][i] + input["Staff Uniforms"][i])
-      );
-      let directLaborTotal = out.directLabor.reduce((a,b)=>a+b,0);
-
-      out.totalDirect = months.map((_,i)=>out.directMaterial[i]+out.directLabor[i]);
-      let totalDirectMaterialLabor = out.totalDirect.reduce((a,b)=>a+b,0);
-
-      out.overhead = input["Total Overhead"];
-      let overheadTotal = out.overhead.reduce((a,b)=>a+b,0);
-
-      out.operatingExpenses = months.map((_,i)=>out.totalDirect[i]+out.overhead[i]);
-      let operatingExpenseTotal = out.operatingExpenses.reduce((a,b)=>a+b,0);
-
-      out.grossProfit = months.map((_,i)=>out.netSales[i]-out.operatingExpenses[i]);
-      let grossProfitTotal = out.grossProfit.reduce((a,b)=>a+b,0);
-
-      out.admin = months.map((_,i)=>
-        (input["Advertisement & Business Promotion"][i] +
-         input["Govt Reg. Renewal & License Fee"][i] +
-         input["Restaurant Rental"][i] +
-         input["Employees Cost"][i])
-      );
-      let adminTotal = out.admin.reduce((a,b)=>a+b,0);
-
-      out.ebitda = months.map((_,i)=>out.grossProfit[i]-out.admin[i]);
-      let ebitdaTotal = out.ebitda.reduce((a,b)=>a+b,0);
-
-      // For notes, margins
-      let grossMargin = revTotal > 0 ? (grossProfitTotal/revTotal)*100 : 0;
-      let ebitdaMargin = revTotal > 0 ? (ebitdaTotal/revTotal)*100 : 0;
-
-      // output HTML table
-      let html = `<div class="dashboard">
-        <h2>Monthly P&amp;L Summary (2025)</h2>
-        <table class="dashboard-table">
-          <tr><th>Particulars</th><th>Total</th>${months.map(m=>`<th>${m}</th>`).join("")}</tr>
-          <tr class="total"><td>Net Sales</td><td>${revTotal.toLocaleString()}</td>${out.netSales.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Material</td><td>${directMaterialTotal.toLocaleString()}</td>${out.directMaterial.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Labor</td><td>${directLaborTotal.toLocaleString()}</td>${out.directLabor.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Direct Material & Labor</td><td>${totalDirectMaterialLabor.toLocaleString()}</td>${out.totalDirect.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Overhead</td><td>${overheadTotal.toLocaleString()}</td>${out.overhead.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr class="highlight"><td>Total Operating Expenses</td><td>${operatingExpenseTotal.toLocaleString()}</td>${out.operatingExpenses.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td colspan="7"></td></tr>
-          <tr class="highlight-green"><td>Gross Profit</td><td>${grossProfitTotal.toLocaleString()}</td>${out.grossProfit.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr><td>Total Admin Expenses</td><td>${adminTotal.toLocaleString()}</td>${out.admin.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-          <tr class="highlight-green"><td>EBITDA</td><td>${ebitdaTotal.toLocaleString()}</td>${out.ebitda.map(v=>`<td>${v.toLocaleString()}</td>`).join("")}</tr>
-        </table>
-        <div class="key-notes"><strong>Key Notes:</strong>
-          <ul>
-            <li>Gross Profit Margin (total): ${grossMargin.toFixed(2)}%</li>
-            <li>EBITDA Margin (total): ${ebitdaMargin.toFixed(2)}%</li>
-            <li>Quick snapshot for monthly/total profit and expense positions.</li>
-          </ul>
-        </div>
-        <button onclick="window.print()">Print Report</button>
-      </div>`;
-      document.getElementById("dashboard").innerHTML = html;
-    }
-
-    function init() {
-      document.getElementById("data_inputs").innerHTML = buildInputsTable();
-      document.getElementById("dashboard").innerHTML = "";
-    }
-  </script>
+<style>
+body{font-family:Arial;background:#f4f6f8;padding:20px}
+h1,h2{color:#b30000}
+.box{background:#fff;padding:20px;border-radius:8px;margin-bottom:20px}
+label{display:block;font-weight:bold;margin-top:10px}
+input,select{width:100%;padding:8px;margin-top:5px}
+button{margin-top:15px;padding:10px;background:#b30000;color:#fff;border:none}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{border:1px solid #ccc;padding:8px;text-align:center}
+th{background:#eee}
+.green{color:green;font-weight:bold}
+.red{color:red;font-weight:bold}
+</style>
 </head>
-<body onload="init()">
-  <div class="container">
-    <h1>📑 Crispy Chicken Restaurants - Monthly P&amp;L Dashboard <span style="font-size:0.55em;color:#666;">2025</span></h1>
-    <div class="input-section">
-      <h2>Enter Data for Each Month</h2>
-      <form onsubmit="event.preventDefault(); calcDashboard();">
-        <div id="data_inputs"></div>
-        <div class="btn-group">
-          <button type="submit">Generate Report & Dashboard</button>
-          <button type="button" onclick="window.print()">Print Blank Form</button>
-        </div>
-      </form>
-    </div>
-    <div id="dashboard"></div>
-  </div>
+
+<body>
+
+<h1>Corporate Fast Food Operations System</h1>
+
+<!-- DATA ENTRY -->
+<div class="box">
+<h2>Daily Branch Entry</h2>
+
+<label>Branch</label>
+<input id="branch">
+
+<label>Date</label>
+<input type="date" id="date">
+
+<label>Sales (AED)</label>
+<input type="number" id="sales">
+
+<label>Target (AED)</label>
+<input type="number" id="target">
+
+<label>Transactions (TRC)</label>
+<input type="number" id="trc">
+
+<label>Staff</label>
+<input type="number" id="staff">
+
+<label>Complaints</label>
+<input type="number" id="complaints">
+
+<button onclick="save()">Save</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="box">
+<h2>Corporate Dashboard</h2>
+<p><strong>Total Sales:</strong> <span id="tSales">0</span></p>
+<p><strong>Achievement %:</strong> <span id="tAch">0%</span></p>
+<p><strong>Avg Ticket:</strong> <span id="tAvg">0</span></p>
+</div>
+
+<!-- TABLE -->
+<div class="box">
+<h2>Branch Performance</h2>
+<table id="table">
+<tr>
+<th>Branch</th><th>Date</th><th>Sales</th><th>Target</th>
+<th>Ach %</th><th>TRC</th><th>Complaints</th>
+</tr>
+</table>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("corpOps")) || [];
+
+function save(){
+ let r={
+  branch:branch.value,
+  date:date.value,
+  sales:+sales.value,
+  target:+target.value,
+  trc:+trc.value,
+  complaints:+complaints.value
+ };
+ data.push(r);
+ localStorage.setItem("corpOps",JSON.stringify(data));
+ render(); calc();
+ document.querySelectorAll("input").forEach(i=>i.value="");
+}
+
+function render(){
+ let t=document.getElementById("table");
+ t.innerHTML=`<tr>
+ <th>Branch</th><th>Date</th><th>Sales</th><th>Target</th>
+ <th>Ach %</th><th>TRC</th><th>Complaints</th></tr>`;
+ data.forEach(r=>{
+  let ach=r.target?((r.sales/r.target)*100).toFixed(1):0;
+  t.innerHTML+=`
+  <tr>
+   <td>${r.branch}</td>
+   <td>${r.date}</td>
+   <td>${r.sales}</td>
+   <td>${r.target}</td>
+   <td class="${ach>=100?'green':'red'}">${ach}%</td>
+   <td>${r.trc}</td>
+   <td>${r.complaints}</td>
+  </tr>`;
+ });
+}
+
+function calc(){
+ let s=data.reduce((a,b)=>a+b.sales,0);
+ let t=data.reduce((a,b)=>a+b.target,0);
+ let trc=data.reduce((a,b)=>a+b.trc,0);
+ document.getElementById("tSales").innerText=s;
+ document.getElementById("tAch").innerText=t?((s/t)*100).toFixed(1)+"%":"0%";
+ document.getElementById("tAvg").innerText=trc?(s/trc).toFixed(2):0;
+}
+
+render(); calc();
+</script>
+
 </body>
 </html>
