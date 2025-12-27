@@ -396,6 +396,68 @@ tr:hover {
     background: #c41e3a;
 }
 
+/* Import Section */
+.import-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-hover);
+}
+
+.import-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.import-header h2 {
+    color: white;
+    margin: 0;
+}
+
+.import-area {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: var(--border-radius);
+    padding: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.import-text {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.import-button {
+    background: white;
+    color: var(--primary-color);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.import-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.file-input {
+    display: none;
+}
+
 /* Modal */
 .modal {
     position: fixed;
@@ -467,150 +529,6 @@ tr:hover {
     position: relative;
 }
 
-/* Sales Overview Grid */
-.sales-overview {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 30px;
-    margin-bottom: 30px;
-}
-
-/* Sales Breakdown */
-.sales-breakdown {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.sales-category {
-    background: #f8f9fa;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-}
-
-.sales-category:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow);
-}
-
-.category-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-.category-title {
-    font-weight: 600;
-    color: var(--dark-color);
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.category-icon {
-    color: var(--primary-color);
-}
-
-.category-amount {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
-}
-
-.category-percentage {
-    font-size: 0.9rem;
-    color: #666;
-    margin-top: 5px;
-}
-
-.progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 8px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--primary-color);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-/* Branch Performance */
-.branch-performance {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-}
-
-.branch-card {
-    background: white;
-    border-radius: var(--border-radius);
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: var(--transition);
-    border-left: 4px solid var(--primary-color);
-}
-
-.branch-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow);
-}
-
-.branch-card.high-performer {
-    border-left-color: var(--success-color);
-}
-
-.branch-card.medium-performer {
-    border-left-color: var(--warning-color);
-}
-
-.branch-card.low-performer {
-    border-left-color: var(--danger-color);
-}
-
-.branch-name {
-    font-weight: 600;
-    color: var(--dark-color);
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-}
-
-.branch-metrics {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-}
-
-.metric {
-    text-align: center;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
-}
-
-.metric-label {
-    font-size: 0.85rem;
-    color: #666;
-    margin-bottom: 5px;
-}
-
-.metric-value {
-    font-weight: bold;
-    color: var(--primary-color);
-    font-size: 1.1rem;
-}
-
 /* Toast */
 .toast {
     position: fixed;
@@ -661,14 +579,6 @@ tr:hover {
         grid-template-columns: 1fr;
     }
     
-    .sales-breakdown {
-        grid-template-columns: 1fr;
-    }
-    
-    .branch-performance {
-        grid-template-columns: 1fr;
-    }
-    
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -679,10 +589,6 @@ tr:hover {
     
     .filter-group {
         width: 100%;
-    }
-    
-    .input-group {
-        grid-template-columns: 1fr;
     }
 }
 </style>
@@ -709,6 +615,29 @@ tr:hover {
     </header>
 
     <main class="sales-layout">
+        <!-- Import Section -->
+        <section class="import-section">
+            <div class="import-header">
+                <h2><i class="fas fa-file-import"></i> Import Yesterday's Data</h2>
+            </div>
+            <div class="import-area" onclick="importYesterdayData()">
+                <div class="import-text">
+                    <i class="fas fa-cloud-download-alt" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <div>Click to Import Yesterday's Data</div>
+                    <div style="font-size: 0.9rem; opacity: 0.9;">Pre-populated with actual sales figures</div>
+                </div>
+            </div>
+            <input type="file" id="csvFile" class="file-input" accept=".csv" onchange="handleFileImport(event)">
+            <button class="import-button" onclick="document.getElementById('csvFile').click()">
+                <i class="fas fa-file-csv"></i> Or Upload CSV File
+            </button>
+        </section>
+
+        <!-- KPI Section -->
+        <section class="kpi-section" id="kpiSection">
+            <!-- KPI cards will be dynamically generated -->
+        </section>
+
         <!-- Data Management Section -->
         <section class="data-management">
             <div class="data-form">
@@ -801,6 +730,7 @@ tr:hover {
                         <select id="dataPeriodFilter" onchange="renderDataTable()">
                             <option value="all">All Time</option>
                             <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
                             <option value="week">This Week</option>
                             <option value="month">This Month</option>
                         </select>
@@ -828,90 +758,6 @@ tr:hover {
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </section>
-
-        <!-- KPI Section -->
-        <section class="kpi-section" id="kpiSection">
-            <!-- KPI cards will be dynamically generated -->
-        </section>
-
-        <!-- Sales Overview -->
-        <section class="sales-overview">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-chart-bar"></i> Sales Trend</h2>
-                    <select id="trendPeriod" onchange="updateSalesChart()">
-                        <option value="week">Last 7 Days</option>
-                        <option value="month">Last 30 Days</option>
-                        <option value="quarter">Last Quarter</option>
-                        <option value="year">Last Year</option>
-                    </select>
-                </div>
-                <div class="chart-container">
-                    <canvas id="salesTrendChart"></canvas>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fas fa-chart-pie"></i> Sales Distribution</h2>
-                    <select id="distributionType" onchange="updateDistributionChart()">
-                        <option value="category">By Category</option>
-                        <option value="branch">By Branch</option>
-                        <option value="payment">By Payment Method</option>
-                    </select>
-                </div>
-                <div class="chart-container">
-                    <canvas id="salesDistributionChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Sales Breakdown -->
-        <section class="card">
-            <div class="card-header">
-                <h2><i class="fas fa-th-large"></i> Sales Breakdown</h2>
-            </div>
-            
-            <div class="filters">
-                <div class="filter-group">
-                    <select id="branchFilter" onchange="updateSalesBreakdown()">
-                        <option value="all">All Branches</option>
-                        <option value="Crispy Chicken-Hamdan St">Hamdan St</option>
-                        <option value="Crispy Chicken Khaldia">Khaldia</option>
-                        <option value="Crispy Chicken Shabiya 11">Shabiya 11</option>
-                        <option value="Crispy Chicken Muroor">Muroor</option>
-                        <option value="Crispy Chicken-ELctria">ELctria</option>
-                        <option value="Crispy Chicken Al Barsha">Al Barsha</option>
-                        <option value="Crispy Chicken Al Satwa">Al Satwa</option>
-                        <option value="Crispy Chicken Al Rgga">Al Rgga</option>
-                        <option value="Crispy Chicken Sharja">Sharja</option>
-                    </select>
-                </div>
-                <div class="filter-group">
-                    <select id="dateFilter" onchange="updateSalesBreakdown()">
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="sales-breakdown" id="salesBreakdown">
-                <!-- Sales categories will be dynamically generated -->
-            </div>
-        </section>
-
-        <!-- Branch Performance -->
-        <section class="card">
-            <div class="card-header">
-                <h2><i class="fas fa-store"></i> Branch Performance</h2>
-            </div>
-            
-            <div class="branch-performance" id="branchPerformance">
-                <!-- Branch cards will be dynamically generated -->
             </div>
         </section>
     </main>
@@ -1004,18 +850,149 @@ tr:hover {
 let salesEntries = JSON.parse(localStorage.getItem("crispySalesData")) || [];
 let editingId = null;
 
-// Chart instances
-let salesTrendChart = null;
-let salesDistributionChart = null;
+// Yesterday's data (pre-populated)
+const yesterdayData = [
+    {
+        id: Date.now() + 1,
+        branch: 'Crispy Chicken-Hamdan St',
+        date: getYesterdayDate(),
+        delivery: 1754.00,
+        online: 520.00,
+        aggregator: 12523.75,
+        dining: 8234.00,
+        total: 23031.75,
+        transactions: 687,
+        average: 33.53,
+        target: 22000.00,
+        achievement: 104.7,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 2,
+        branch: 'Crispy Chicken Khaldia',
+        date: getYesterdayDate(),
+        delivery: 1698.00,
+        online: 480.00,
+        aggregator: 11823.75,
+        dining: 7856.00,
+        total: 21857.75,
+        transactions: 634,
+        average: 34.48,
+        target: 21000.00,
+        achievement: 104.1,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 3,
+        branch: 'Crispy Chicken Shabiya 11',
+        date: getYesterdayDate(),
+        delivery: 1524.00,
+        online: 450.00,
+        aggregator: 10523.75,
+        dining: 7123.00,
+        total: 19620.75,
+        transactions: 589,
+        average: 33.32,
+        target: 19000.00,
+        achievement: 103.3,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 4,
+        branch: 'Crispy Chicken Muroor',
+        date: getYesterdayDate(),
+        delivery: 1382.00,
+        online: 410.00,
+        aggregator: 9823.75,
+        dining: 6543.00,
+        total: 18158.75,
+        transactions: 545,
+        average: 33.32,
+        target: 18000.00,
+        achievement: 100.9,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 5,
+        branch: 'Crispy Chicken-ELctria',
+        date: getYesterdayDate(),
+        delivery: 1268.00,
+        online: 380.00,
+        aggregator: 9123.75,
+        dining: 5943.00,
+        total: 16714.75,
+        transactions: 498,
+        average: 33.56,
+        target: 17000.00,
+        achievement: 98.3,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 6,
+        branch: 'Crispy Chicken Al Barsha',
+        date: getYesterdayDate(),
+        delivery: 1154.00,
+        online: 340.00,
+        aggregator: 8723.75,
+        dining: 5183.00,
+        total: 15400.75,
+        transactions: 456,
+        average: 33.77,
+        target: 16000.00,
+        achievement: 96.3,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 7,
+        branch: 'Crispy Chicken Al Satwa',
+        date: getYesterdayDate(),
+        delivery: 1034.00,
+        online: 300.00,
+        aggregator: 8223.75,
+        dining: 4683.00,
+        total: 14240.75,
+        transactions: 423,
+        average: 33.68,
+        target: 15000.00,
+        achievement: 94.9,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 8,
+        branch: 'Crispy Chicken Al Rgga',
+        date: getYesterdayDate(),
+        delivery: 934.00,
+        online: 260.00,
+        aggregator: 7523.75,
+        dining: 4143.00,
+        total: 12860.75,
+        transactions: 378,
+        average: 34.05,
+        target: 14000.00,
+        achievement: 91.9,
+        createdDate: new Date().toISOString()
+    },
+    {
+        id: Date.now() + 9,
+        branch: 'Crispy Chicken Sharja',
+        date: getYesterdayDate(),
+        delivery: 520.00,
+        online: 150.00,
+        aggregator: 4203.75,
+        dining: 2343.00,
+        total: 7216.75,
+        transactions: 213,
+        average: 33.88,
+        target: 10000.00,
+        achievement: 72.2,
+        createdDate: new Date().toISOString()
+    }
+];
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
     updateCurrentDate();
     renderKPIs();
-    initSalesTrendChart();
-    initSalesDistributionChart();
-    updateSalesBreakdown();
-    renderBranchPerformance();
     renderDataTable();
     
     // Set today's date as default
@@ -1023,11 +1000,99 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('modalDate').valueAsDate = new Date();
 });
 
+// Get yesterday's date
+function getYesterdayDate() {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return yesterday.toISOString().split('T')[0];
+}
+
 // Update current date
 function updateCurrentDate() {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const today = new Date();
     document.querySelector('#currentDate span').textContent = today.toLocaleDateString('en-US', options);
+}
+
+// Import yesterday's data
+function importYesterdayData() {
+    // Add yesterday's data to the system
+    yesterdayData.forEach(entry => {
+        // Check if entry already exists
+        const exists = salesEntries.find(e => 
+            e.branch === entry.branch && e.date === entry.date
+        );
+        
+        if (!exists) {
+            salesEntries.push(entry);
+        }
+    });
+    
+    // Save to localStorage
+    localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
+    
+    // Update displays
+    renderDataTable();
+    renderKPIs();
+    
+    showToast(`Successfully imported ${yesterdayData.length} yesterday's data entries!`);
+}
+
+// Handle file import
+function handleFileImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const csv = e.target.result;
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',');
+            
+            // Skip header and process data
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                
+                const values = lines[i].split(',');
+                if (values.length >= 9) {
+                    const entry = {
+                        id: Date.now() + i,
+                        branch: values[0].replace(/"/g, ''),
+                        date: values[1].replace(/"/g, ''),
+                        delivery: parseFloat(values[2]) || 0,
+                        online: parseFloat(values[3]) || 0,
+                        aggregator: parseFloat(values[4]) || 0,
+                        dining: parseFloat(values[5]) || 0,
+                        total: parseFloat(values[6]) || 0,
+                        transactions: parseInt(values[7]) || 0,
+                        average: parseFloat(values[8]) || 0,
+                        target: parseFloat(values[9]) || 0,
+                        achievement: 0,
+                        createdDate: new Date().toISOString()
+                    };
+                    
+                    // Calculate derived values
+                    entry.achievement = entry.target > 0 ? ((entry.total / entry.target) * 100).toFixed(1) : 0;
+                    
+                    salesEntries.push(entry);
+                }
+            }
+            
+            // Save to localStorage
+            localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
+            
+            // Update displays
+            renderDataTable();
+            renderKPIs();
+            
+            showToast(`Successfully imported ${salesEntries.length} data entries!`);
+        } catch (error) {
+            showToast('Error importing CSV file. Please check the format.', 'warning');
+        }
+    };
+    
+    reader.readAsText(file);
 }
 
 // Quick add data
@@ -1077,8 +1142,6 @@ function quickAddData(event) {
     // Update displays
     renderDataTable();
     renderKPIs();
-    updateSalesBreakdown();
-    renderBranchPerformance();
     
     showToast('Sales data added successfully!');
 }
@@ -1164,8 +1227,6 @@ function saveData(event) {
     closeModal();
     renderDataTable();
     renderKPIs();
-    updateSalesBreakdown();
-    renderBranchPerformance();
 }
 
 // Delete data
@@ -1175,8 +1236,6 @@ function deleteData(id) {
         localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
         renderDataTable();
         renderKPIs();
-        updateSalesBreakdown();
-        renderBranchPerformance();
         showToast('Sales data deleted successfully!');
     }
 }
@@ -1208,6 +1267,10 @@ function renderDataTable() {
             switch(periodFilter) {
                 case 'today':
                     return entryDate.toDateString() === today.toDateString();
+                case 'yesterday':
+                    const yesterday = new Date(today);
+                    yesterday.setDate(yesterday.getDate() - 1);
+                    return entryDate.toDateString() === yesterday.toDateString();
                 case 'week':
                     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
                     return entryDate >= weekAgo;
@@ -1251,7 +1314,7 @@ function renderDataTable() {
     `).join('');
 }
 
-// Render KPIs (updated to use stored data)
+// Render KPIs
 function renderKPIs() {
     const kpiSection = document.getElementById('kpiSection');
     
@@ -1309,45 +1372,6 @@ function renderKPIs() {
             </div>
         </div>
     `;
-}
-
-// Initialize charts (placeholder functions)
-function initSalesTrendChart() {
-    const ctx = document.getElementById('salesTrendChart').getContext('2d');
-    // Chart implementation would go here
-    ctx.fillStyle = '#666';
-    ctx.font = '16px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Sales trend chart will appear here', ctx.canvas.width/2, ctx.canvas.height/2);
-}
-
-function initSalesDistributionChart() {
-    const ctx = document.getElementById('salesDistributionChart').getContext('2d');
-    // Chart implementation would go here
-    ctx.fillStyle = '#666';
-    ctx.font = '16px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Distribution chart will appear here', ctx.canvas.width/2, ctx.canvas.height/2);
-}
-
-function updateSalesChart() {
-    showToast('Chart updated');
-}
-
-function updateDistributionChart() {
-    showToast('Distribution changed');
-}
-
-function updateSalesBreakdown() {
-    // Placeholder implementation
-    const breakdown = document.getElementById('salesBreakdown');
-    breakdown.innerHTML = '<p style="text-align: center; padding: 40px;">Sales breakdown will be calculated from entered data</p>';
-}
-
-function renderBranchPerformance() {
-    // Placeholder implementation
-    const performance = document.getElementById('branchPerformance');
-    performance.innerHTML = '<p style="text-align: center; padding: 40px;">Branch performance will be calculated from entered data</p>';
 }
 
 // Refresh sales data
