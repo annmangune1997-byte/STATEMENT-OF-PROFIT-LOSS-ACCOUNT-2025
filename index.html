@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crispy Chicken - Sales Analytics & Targets</title>
+<title>Crispy Chicken - Editable Targets</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
@@ -67,7 +67,6 @@ button.outline:hover { background: var(--primary-color); color: white; }
 .kpi-sub { font-size: 0.85rem; color: #888; }
 .kpi-icon { position: absolute; right: 20px; top: 20px; opacity: 0.1; font-size: 3rem; color: var(--primary-color); }
 
-/* Call Center Card */
 .kpi-card.aggregate { border: 2px solid var(--warning-color); background: #fffdf5; }
 .kpi-card.aggregate .kpi-icon { color: var(--warning-color); }
 
@@ -91,6 +90,10 @@ input, select {
 input:focus, select:focus { border-color: var(--primary-color); background: white; outline: none; }
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
 
+input.auto-calc { border-color: var(--success-color); background-color: #f0fff4; cursor: pointer; }
+input.auto-calc:hover { background-color: #d1fae5; }
+input.auto-calc:focus { background-color: white; }
+
 /* Table */
 .table-controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
 .data-table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; }
@@ -99,7 +102,6 @@ th { background: var(--dark-color); color: white; padding: 14px 16px; text-align
 td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
 tr:hover { background: #f9fafb; }
 
-/* Date Range Inputs */
 #dateRangeInputs {
     display: none;
     flex: 1;
@@ -182,7 +184,7 @@ tr:hover { background: #f9fafb; }
             <form id="quickForm" onsubmit="handleQuickSubmit(event)">
                 <div class="form-group">
                     <label>Branch *</label>
-                    <select id="q_branch" required onchange="autoFillTarget('q_branch', 'q_target')">
+                    <select id="q_branch" required onchange="updateCalculatedTarget('q_branch', 'q_date', 'q_target')">
                         <option value="">Select Branch</option>
                         <option value="Crispy Chicken Hamdan">Hamdan</option>
                         <option value="Crispy Chicken Shabia">Shabia</option>
@@ -198,7 +200,7 @@ tr:hover { background: #f9fafb; }
                 </div>
                 <div class="form-group">
                     <label>Date *</label>
-                    <input type="date" id="q_date" required>
+                    <input type="date" id="q_date" required onchange="updateCalculatedTarget('q_branch', 'q_date', 'q_target')">
                 </div>
                 <div class="input-grid">
                     <div class="form-group"><label>Delivery</label><input type="number" id="q_delivery" step="0.01" min="0" placeholder="0.00"></div>
@@ -208,7 +210,11 @@ tr:hover { background: #f9fafb; }
                 </div>
                 <div class="input-grid">
                     <div class="form-group"><label>Transactions</label><input type="number" id="q_trans" min="0" placeholder="0"></div>
-                    <div class="form-group"><label>Daily Target</label><input type="number" id="q_target" step="0.01" min="0" placeholder="Auto-filled"></div>
+                    <div class="form-group">
+                        <label>Daily Target</label>
+                        <!-- REMOVED 'readonly' to allow manual overrides for cumulative entries -->
+                        <input type="number" id="q_target" step="0.01" class="auto-calc" placeholder="Auto-calc..." title="Auto-calculated (You can edit)">
+                    </div>
                 </div>
                 <button type="submit" class="success" style="width: 100%; justify-content: center;"><i class="fas fa-save"></i> Save Entry</button>
             </form>
@@ -231,7 +237,7 @@ tr:hover { background: #f9fafb; }
                         <option value="custom">Day To Day (Custom Range)</option>
                     </select>
                 </div>
-                <!-- Custom Date Inputs (Hidden by default) -->
+                <!-- Custom Date Inputs -->
                 <div id="dateRangeInputs">
                     <div style="flex:1;">
                         <label>Start Date</label>
@@ -277,7 +283,7 @@ tr:hover { background: #f9fafb; }
             <input type="hidden" id="m_id">
             <div class="form-group">
                 <label>Branch *</label>
-                <select id="m_branch" required onchange="autoFillTarget('m_branch', 'm_target')">
+                <select id="m_branch" required onchange="updateCalculatedTarget('m_branch', 'm_date', 'm_target')">
                     <option value="">Select Branch</option>
                     <option value="Crispy Chicken Hamdan">Hamdan</option>
                     <option value="Crispy Chicken Shabia">Shabia</option>
@@ -291,7 +297,7 @@ tr:hover { background: #f9fafb; }
                     <option value="Crispy Chicken Call Center">Call Center</option>
                 </select>
             </div>
-            <div class="form-group"><label>Date *</label><input type="date" id="m_date" required></div>
+            <div class="form-group"><label>Date *</label><input type="date" id="m_date" required onchange="updateCalculatedTarget('m_branch', 'm_date', 'm_target')"></div>
             <div class="input-grid">
                 <div class="form-group"><label>Delivery</label><input type="number" id="m_delivery" step="0.01" min="0"></div>
                 <div class="form-group"><label>Online</label><input type="number" id="m_online" step="0.01" min="0"></div>
@@ -300,7 +306,11 @@ tr:hover { background: #f9fafb; }
             </div>
             <div class="input-grid">
                 <div class="form-group"><label>Transactions</label><input type="number" id="m_trans" min="0"></div>
-                <div class="form-group"><label>Daily Target</label><input type="number" id="m_target" step="0.01" min="0"></div>
+                <div class="form-group">
+                    <label>Daily Target</label>
+                    <!-- REMOVED 'readonly' to allow manual overrides -->
+                    <input type="number" id="m_target" step="0.01" class="auto-calc" placeholder="Auto-calc..." title="Auto-calculated (You can edit)">
+                </div>
             </div>
             <div class="modal-footer" style="border-top:1px solid #eee; padding-top:15px; display:flex; justify-content:flex-end; gap:10px;">
                 <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
@@ -315,28 +325,28 @@ tr:hover { background: #f9fafb; }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // --- CONFIGURATION & DATA ---
-const STORAGE_KEY = 'crispy_sales_v6';
+const STORAGE_KEY = 'crispy_sales_v8';
 let salesData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let chartInstances = {};
 
-const BRANCH_TARGETS = {
-    "Crispy Chicken Hamdan": 27097,
-    "Crispy Chicken Shabia": 25806,
-    "Crispy Chicken Khaldia": 24194,
-    "Crispy Chicken Mourror": 20000,
-    "Crispy Chicken Barsha": 25806,
-    "Crispy Chicken Satwa": 20968,
-    "Crispy Chicken Electra": 32258,
-    "Crispy Chicken Rigga": 26290,
-    "Crispy Chicken Majaz": 12903,
-    "Crispy Chicken Call Center": 8548
+// Monthly Targets (Source of Truth)
+const BRANCH_MONTHLY_TARGETS = {
+    "Crispy Chicken Hamdan": 840000,
+    "Crispy Chicken Shabia": 800000,
+    "Crispy Chicken Khaldia": 750000,
+    "Crispy Chicken Mourror": 620000,
+    "Crispy Chicken Barsha": 800000,
+    "Crispy Chicken Satwa": 650000,
+    "Crispy Chicken Electra": 1000000,
+    "Crispy Chicken Rigga": 815000,
+    "Crispy Chicken Majaz": 400000,
+    "Crispy Chicken Call Center": 265000
 };
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     const todayStr = new Date().toISOString().split('T')[0];
     
-    // Set defaults
     document.getElementById('q_date').value = todayStr;
     document.getElementById('m_date').value = todayStr;
     document.getElementById('f_start').value = todayStr;
@@ -345,6 +355,8 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCurrentDate();
     populateBranchFilter();
     initCharts();
+    
+    updateCalculatedTarget('q_branch', 'q_date', 'q_target');
     updateDashboard();
 });
 
@@ -355,7 +367,7 @@ function updateCurrentDate() {
 function populateBranchFilter() {
     const select = document.getElementById('f_branch');
     while (select.options.length > 1) { select.remove(1); }
-    Object.keys(BRANCH_TARGETS).forEach(branch => {
+    Object.keys(BRANCH_MONTHLY_TARGETS).forEach(branch => {
         const opt = document.createElement('option');
         opt.value = branch;
         opt.textContent = branch.replace('Crispy Chicken ', '');
@@ -363,24 +375,33 @@ function populateBranchFilter() {
     });
 }
 
-function autoFillTarget(branchSelectId, targetInputId) {
+/**
+ * LOGIC: Calculate Daily Target based on Calendar Date
+ * Formula: Monthly Target / Days in Selected Month
+ */
+function updateCalculatedTarget(branchSelectId, dateInputId, targetInputId) {
     const branchVal = document.getElementById(branchSelectId).value;
+    const dateVal = document.getElementById(dateInputId).value;
     const targetInput = document.getElementById(targetInputId);
-    if (branchVal && BRANCH_TARGETS[branchVal] !== undefined) {
-        targetInput.value = BRANCH_TARGETS[branchVal];
-    } else {
-        targetInput.value = 0;
+
+    // Only calculate if field is not currently focused (allows manual override without being wiped)
+    if (document.activeElement !== targetInput) {
+        if (branchVal && dateVal && BRANCH_MONTHLY_TARGETS[branchVal]) {
+            const monthlyTarget = BRANCH_MONTHLY_TARGETS[branchVal];
+            const dateObj = new Date(dateVal);
+            const daysInMonth = new Date(dateObj.getFullYear(), dateObj.getMonth() + 1, 0).getDate();
+            const dailyTarget = monthlyTarget / daysInMonth;
+            targetInput.value = dailyTarget.toFixed(2);
+        } else {
+            targetInput.value = 0;
+        }
     }
 }
 
 function toggleDateInputs() {
     const type = document.getElementById('f_period').value;
     const inputs = document.getElementById('dateRangeInputs');
-    if (type === 'custom') {
-        inputs.style.display = 'flex';
-    } else {
-        inputs.style.display = 'none';
-    }
+    inputs.style.display = (type === 'custom') ? 'flex' : 'none';
 }
 
 // --- CORE LOGIC ---
@@ -426,7 +447,7 @@ function getFilteredData() {
                 const end = new Date(endVal); end.setHours(0,0,0,0);
                 dateMatch = itemDate >= start && itemDate <= end;
             } else {
-                dateMatch = false; // Require dates if custom selected
+                dateMatch = false;
             }
         }
         
@@ -442,15 +463,15 @@ function renderKPIs(data) {
     const achievement = totalTarget ? Math.round((totalSales/totalTarget)*100) : 0;
 
     const totalDelivery = data.reduce((sum, i) => sum + i.delivery, 0);
-    const callCenterTarget = 8548; 
-    const callCenterAch = Math.round((totalDelivery / callCenterTarget) * 100);
+    const callCenterSavedTarget = data.filter(i=>i.branch.includes("Call Center")).reduce((s,i)=>s+i.target,0);
+    const callCenterAch = callCenterSavedTarget ? Math.round((totalDelivery / callCenterSavedTarget) * 100) : 0;
 
     document.getElementById('kpiSection').innerHTML = `
         <div class="kpi-card aggregate">
             <i class="fas fa-headset kpi-icon"></i>
             <div class="kpi-title">Call Center (Delivery Agg.)</div>
             <div class="kpi-value" style="color:var(--warning-color)">AED ${totalDelivery.toLocaleString()}</div>
-            <div class="kpi-sub"><strong>${callCenterAch}%</strong> of Target (8,548)</div>
+            <div class="kpi-sub"><strong>${callCenterAch}%</strong> (Target: AED ${callCenterSavedTarget.toLocaleString()})</div>
         </div>
         <div class="kpi-card">
             <i class="fas fa-coins kpi-icon"></i>
@@ -583,7 +604,6 @@ function initCharts() {
 }
 
 function updateCharts(data) {
-    // Trend
     const days = parseInt(document.getElementById('trendPeriod').value);
     const dateMap = {};
     for(let i=days-1; i>=0; i--) {
@@ -596,7 +616,6 @@ function updateCharts(data) {
     chartInstances.trend.data.datasets = [{ label: 'Sales', data: Object.keys(dateMap).sort().map(k => dateMap[k]), borderColor: '#b30000', tension: 0.4, fill: true }];
     chartInstances.trend.update();
 
-    // Dist
     const totals = { delivery:0, online:0, aggregator:0, dining:0 };
     data.forEach(d => { totals.delivery += d.delivery; totals.online += d.online; totals.aggregator += d.aggregator; totals.dining += d.dining; });
     chartInstances.dist.data.labels = Object.keys(totals).map(k=>k.toUpperCase());
