@@ -2,123 +2,1407 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Corporate Operations Dashboard</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crispy Chicken - Sales Analytics & Management</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-body{font-family:Arial;background:#f4f6f8;padding:20px}
-h1,h2{color:#b30000}
-.box{background:#fff;padding:20px;border-radius:8px;margin-bottom:20px}
-label{display:block;font-weight:bold;margin-top:10px}
-input,select{width:100%;padding:8px;margin-top:5px}
-button{margin-top:15px;padding:10px;background:#b30000;color:#fff;border:none}
-table{width:100%;border-collapse:collapse;margin-top:15px}
-th,td{border:1px solid #ccc;padding:8px;text-align:center}
-th{background:#eee}
-.green{color:green;font-weight:bold}
-.red{color:red;font-weight:bold}
+:root {
+    --primary-color: #b30000;
+    --secondary-color: #e63946;
+    --accent-color: #f1faee;
+    --dark-color: #1d3557;
+    --light-color: #f8f9fa;
+    --success-color: #2a9d8f;
+    --warning-color: #e9c46a;
+    --danger-color: #e76f51;
+    --info-color: #457b9d;
+    --border-radius: 12px;
+    --transition: all 0.3s ease;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: #333;
+}
+
+.container {
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Header */
+header {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 25px 30px;
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
+    box-shadow: var(--shadow-hover);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+h1 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.date-display {
+    color: var(--dark-color);
+    font-weight: 500;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button {
+    padding: 12px 20px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+button:hover {
+    background: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+button.secondary {
+    background: var(--dark-color);
+}
+
+button.success {
+    background: var(--success-color);
+}
+
+button.warning {
+    background: var(--warning-color);
+}
+
+button.danger {
+    background: var(--danger-color);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    transform: none;
+}
+
+/* Layout */
+.sales-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+/* KPI Section */
+.kpi-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.kpi-card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius);
+    padding: 25px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--primary-color);
+}
+
+.kpi-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+}
+
+.kpi-icon {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 2rem;
+    opacity: 0.2;
+    color: var(--primary-color);
+}
+
+.kpi-title {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 2.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.kpi-change {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.kpi-change.positive {
+    color: var(--success-color);
+}
+
+.kpi-change.negative {
+    color: var(--danger-color);
+}
+
+/* Cards */
+.card {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+h2 {
+    color: var(--dark-color);
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Data Management Section */
+.data-management {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.data-form {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+    height: fit-content;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--dark-color);
+    font-size: 0.95rem;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
+}
+
+input.error, select.error {
+    border-color: var(--danger-color);
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin-top: 5px;
+    display: none;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.sales-inputs {
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.sales-inputs h3 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.input-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+/* Data List */
+.data-list {
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: var(--shadow);
+}
+
+.data-filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.data-table-container {
+    overflow-x: auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th {
+    background: var(--primary-color);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+    font-weight: 600;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+tr:hover {
+    background: #f8f9fa;
+}
+
+.edit-btn {
+    background: var(--info-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+.edit-btn:hover {
+    background: var(--dark-color);
+}
+
+.delete-btn {
+    background: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.delete-btn:hover {
+    background: #c41e3a;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: var(--border-radius);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.8);
+    transition: var(--transition);
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #777;
+    padding: 0;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px solid #f0f0f0;
+}
+
+/* Chart Container */
+.chart-container {
+    height: 400px;
+    position: relative;
+}
+
+/* Sales Overview Grid */
+.sales-overview {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Sales Breakdown */
+.sales-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.sales-category {
+    background: #f8f9fa;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.sales-category:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.category-title {
+    font-weight: 600;
+    color: var(--dark-color);
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category-icon {
+    color: var(--primary-color);
+}
+
+.category-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.category-percentage {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 5px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+/* Branch Performance */
+.branch-performance {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.branch-card {
+    background: white;
+    border-radius: var(--border-radius);
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+    border-left: 4px solid var(--primary-color);
+}
+
+.branch-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.branch-card.high-performer {
+    border-left-color: var(--success-color);
+}
+
+.branch-card.medium-performer {
+    border-left-color: var(--warning-color);
+}
+
+.branch-card.low-performer {
+    border-left-color: var(--danger-color);
+}
+
+.branch-name {
+    font-weight: 600;
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.branch-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.metric {
+    text-align: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.metric-label {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.metric-value {
+    font-weight: bold;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--success-color);
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-hover);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: var(--transition);
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .sales-overview {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-management {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .kpi-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .sales-breakdown {
+        grid-template-columns: 1fr;
+    }
+    
+    .branch-performance {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-filters {
+        flex-direction: column;
+    }
+    
+    .filter-group {
+        width: 100%;
+    }
+    
+    .input-group {
+        grid-template-columns: 1fr;
+    }
+}
 </style>
 </head>
-
 <body>
+<div class="container">
+    <header>
+        <h1><i class="fas fa-chart-line"></i> Crispy Chicken Sales Analytics</h1>
+        <div class="header-actions">
+            <div class="date-display" id="currentDate">
+                <i class="far fa-calendar-alt"></i>
+                <span>Loading...</span>
+            </div>
+            <button class="success" onclick="openAddModal()">
+                <i class="fas fa-plus"></i> Add Data
+            </button>
+            <button class="secondary" onclick="refreshSalesData()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <button onclick="exportSalesData()">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </header>
 
-<h1>Corporate Fast Food Operations System</h1>
+    <main class="sales-layout">
+        <!-- Data Management Section -->
+        <section class="data-management">
+            <div class="data-form">
+                <div class="card-header">
+                    <h2><i class="fas fa-database"></i> Quick Data Entry</h2>
+                </div>
+                
+                <form id="quickDataForm" onsubmit="quickAddData(event)">
+                    <div class="form-group">
+                        <label for="quickBranch">Branch *</label>
+                        <select id="quickBranch" required>
+                            <option value="">Select Branch</option>
+                            <option value="Crispy Chicken-Hamdan St">Hamdan St</option>
+                            <option value="Crispy Chicken Khaldia">Khaldia</option>
+                            <option value="Crispy Chicken Shabiya 11">Shabiya 11</option>
+                            <option value="Crispy Chicken Muroor">Muroor</option>
+                            <option value="Crispy Chicken-ELctria">ELctria</option>
+                            <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                            <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                            <option value="Crispy Chicken Al Rgga">Al Rgga</option>
+                            <option value="Crispy Chicken Sharja">Sharja</option>
+                        </select>
+                    </div>
 
-<!-- DATA ENTRY -->
-<div class="box">
-<h2>Daily Branch Entry</h2>
+                    <div class="form-group">
+                        <label for="quickDate">Date *</label>
+                        <input type="date" id="quickDate" required>
+                    </div>
 
-<label>Branch</label>
-<input id="branch">
+                    <div class="sales-inputs">
+                        <h3><i class="fas fa-coins"></i> Sales Amounts</h3>
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label for="quickDelivery">Delivery</label>
+                                <input type="number" id="quickDelivery" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="quickOnline">Online</label>
+                                <input type="number" id="quickOnline" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="quickAggregator">Aggregator</label>
+                                <input type="number" id="quickAggregator" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label for="quickDining">Dining</label>
+                                <input type="number" id="quickDining" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                        </div>
+                    </div>
 
-<label>Date</label>
-<input type="date" id="date">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quickTransactions">Transactions</label>
+                            <input type="number" id="quickTransactions" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="quickTarget">Target</label>
+                            <input type="number" id="quickTarget" min="0" step="0.01" placeholder="0.00">
+                        </div>
+                    </div>
 
-<label>Sales (AED)</label>
-<input type="number" id="sales">
+                    <button type="submit" class="success" style="width: 100%;">
+                        <i class="fas fa-save"></i> Quick Add
+                    </button>
+                </form>
+            </div>
 
-<label>Target (AED)</label>
-<input type="number" id="target">
+            <div class="data-list">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> Sales Data Entries</h2>
+                </div>
+                
+                <div class="data-filters">
+                    <div class="filter-group">
+                        <select id="dataBranchFilter" onchange="renderDataTable()">
+                            <option value="all">All Branches</option>
+                            <option value="Crispy Chicken-Hamdan St">Hamdan St</option>
+                            <option value="Crispy Chicken Khaldia">Khaldia</option>
+                            <option value="Crispy Chicken Shabiya 11">Shabiya 11</option>
+                            <option value="Crispy Chicken Muroor">Muroor</option>
+                            <option value="Crispy Chicken-ELctria">ELctria</option>
+                            <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                            <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                            <option value="Crispy Chicken Al Rgga">Al Rgga</option>
+                            <option value="Crispy Chicken Sharja">Sharja</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <select id="dataPeriodFilter" onchange="renderDataTable()">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="week">This Week</option>
+                            <option value="month">This Month</option>
+                        </select>
+                    </div>
+                </div>
 
-<label>Transactions (TRC)</label>
-<input type="number" id="trc">
+                <div class="data-table-container">
+                    <table id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Branch</th>
+                                <th>Delivery</th>
+                                <th>Online</th>
+                                <th>Aggregator</th>
+                                <th>Dining</th>
+                                <th>Total</th>
+                                <th>Transactions</th>
+                                <th>Average</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                            <!-- Table rows will be dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-<label>Staff</label>
-<input type="number" id="staff">
+        <!-- KPI Section -->
+        <section class="kpi-section" id="kpiSection">
+            <!-- KPI cards will be dynamically generated -->
+        </section>
 
-<label>Complaints</label>
-<input type="number" id="complaints">
+        <!-- Sales Overview -->
+        <section class="sales-overview">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-bar"></i> Sales Trend</h2>
+                    <select id="trendPeriod" onchange="updateSalesChart()">
+                        <option value="week">Last 7 Days</option>
+                        <option value="month">Last 30 Days</option>
+                        <option value="quarter">Last Quarter</option>
+                        <option value="year">Last Year</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="salesTrendChart"></canvas>
+                </div>
+            </div>
 
-<button onclick="save()">Save</button>
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-pie"></i> Sales Distribution</h2>
+                    <select id="distributionType" onchange="updateDistributionChart()">
+                        <option value="category">By Category</option>
+                        <option value="branch">By Branch</option>
+                        <option value="payment">By Payment Method</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="salesDistributionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sales Breakdown -->
+        <section class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-th-large"></i> Sales Breakdown</h2>
+            </div>
+            
+            <div class="filters">
+                <div class="filter-group">
+                    <select id="branchFilter" onchange="updateSalesBreakdown()">
+                        <option value="all">All Branches</option>
+                        <option value="Crispy Chicken-Hamdan St">Hamdan St</option>
+                        <option value="Crispy Chicken Khaldia">Khaldia</option>
+                        <option value="Crispy Chicken Shabiya 11">Shabiya 11</option>
+                        <option value="Crispy Chicken Muroor">Muroor</option>
+                        <option value="Crispy Chicken-ELctria">ELctria</option>
+                        <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                        <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                        <option value="Crispy Chicken Al Rgga">Al Rgga</option>
+                        <option value="Crispy Chicken Sharja">Sharja</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <select id="dateFilter" onchange="updateSalesBreakdown()">
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sales-breakdown" id="salesBreakdown">
+                <!-- Sales categories will be dynamically generated -->
+            </div>
+        </section>
+
+        <!-- Branch Performance -->
+        <section class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-store"></i> Branch Performance</h2>
+            </div>
+            
+            <div class="branch-performance" id="branchPerformance">
+                <!-- Branch cards will be dynamically generated -->
+            </div>
+        </section>
+    </main>
 </div>
 
-<!-- DASHBOARD -->
-<div class="box">
-<h2>Corporate Dashboard</h2>
-<p><strong>Total Sales:</strong> <span id="tSales">0</span></p>
-<p><strong>Achievement %:</strong> <span id="tAch">0%</span></p>
-<p><strong>Avg Ticket:</strong> <span id="tAvg">0</span></p>
+<!-- Add/Edit Modal -->
+<div class="modal" id="dataModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">Add Sales Data</h2>
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        
+        <form id="dataForm" onsubmit="saveData(event)">
+            <input type="hidden" id="editId">
+            
+            <div class="form-group">
+                <label for="modalBranch">Branch *</label>
+                <select id="modalBranch" required>
+                    <option value="">Select Branch</option>
+                    <option value="Crispy Chicken-Hamdan St">Hamdan St</option>
+                    <option value="Crispy Chicken Khaldia">Khaldia</option>
+                    <option value="Crispy Chicken Shabiya 11">Shabiya 11</option>
+                    <option value="Crispy Chicken Muroor">Muroor</option>
+                    <option value="Crispy Chicken-ELctria">ELctria</option>
+                    <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                    <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                    <option value="Crispy Chicken Al Rgga">Al Rgga</option>
+                    <option value="Crispy Chicken Sharja">Sharja</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="modalDate">Date *</label>
+                <input type="date" id="modalDate" required>
+            </div>
+
+            <div class="sales-inputs">
+                <h3><i class="fas fa-coins"></i> Sales Amounts</h3>
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="modalDelivery">Delivery</label>
+                        <input type="number" id="modalDelivery" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalOnline">Online</label>
+                        <input type="number" id="modalOnline" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalAggregator">Aggregator</label>
+                        <input type="number" id="modalAggregator" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalDining">Dining</label>
+                        <input type="number" id="modalDining" min="0" step="0.01" placeholder="0.00">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="modalTransactions">Transactions</label>
+                    <input type="number" id="modalTransactions" min="0" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label for="modalTarget">Target</label>
+                    <input type="number" id="modalTarget" min="0" step="0.01" placeholder="0.00">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="success">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
-<!-- TABLE -->
-<div class="box">
-<h2>Branch Performance</h2>
-<table id="table">
-<tr>
-<th>Branch</th><th>Date</th><th>Sales</th><th>Target</th>
-<th>Ach %</th><th>TRC</th><th>Complaints</th>
-</tr>
-</table>
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMessage">Operation completed successfully!</span>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-let data = JSON.parse(localStorage.getItem("corpOps")) || [];
+// Data storage
+let salesEntries = JSON.parse(localStorage.getItem("crispySalesData")) || [];
+let editingId = null;
 
-function save(){
- let r={
-  branch:branch.value,
-  date:date.value,
-  sales:+sales.value,
-  target:+target.value,
-  trc:+trc.value,
-  complaints:+complaints.value
- };
- data.push(r);
- localStorage.setItem("corpOps",JSON.stringify(data));
- render(); calc();
- document.querySelectorAll("input").forEach(i=>i.value="");
+// Chart instances
+let salesTrendChart = null;
+let salesDistributionChart = null;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    updateCurrentDate();
+    renderKPIs();
+    initSalesTrendChart();
+    initSalesDistributionChart();
+    updateSalesBreakdown();
+    renderBranchPerformance();
+    renderDataTable();
+    
+    // Set today's date as default
+    document.getElementById('quickDate').valueAsDate = new Date();
+    document.getElementById('modalDate').valueAsDate = new Date();
+});
+
+// Update current date
+function updateCurrentDate() {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const today = new Date();
+    document.querySelector('#currentDate span').textContent = today.toLocaleDateString('en-US', options);
 }
 
-function render(){
- let t=document.getElementById("table");
- t.innerHTML=`<tr>
- <th>Branch</th><th>Date</th><th>Sales</th><th>Target</th>
- <th>Ach %</th><th>TRC</th><th>Complaints</th></tr>`;
- data.forEach(r=>{
-  let ach=r.target?((r.sales/r.target)*100).toFixed(1):0;
-  t.innerHTML+=`
-  <tr>
-   <td>${r.branch}</td>
-   <td>${r.date}</td>
-   <td>${r.sales}</td>
-   <td>${r.target}</td>
-   <td class="${ach>=100?'green':'red'}">${ach}%</td>
-   <td>${r.trc}</td>
-   <td>${r.complaints}</td>
-  </tr>`;
- });
+// Quick add data
+function quickAddData(event) {
+    event.preventDefault();
+    
+    const branch = document.getElementById('quickBranch').value;
+    const date = document.getElementById('quickDate').value;
+    const delivery = parseFloat(document.getElementById('quickDelivery').value) || 0;
+    const online = parseFloat(document.getElementById('quickOnline').value) || 0;
+    const aggregator = parseFloat(document.getElementById('quickAggregator').value) || 0;
+    const dining = parseFloat(document.getElementById('quickDining').value) || 0;
+    const transactions = parseInt(document.getElementById('quickTransactions').value) || 0;
+    const target = parseFloat(document.getElementById('quickTarget').value) || 0;
+    
+    if (!branch || !date) {
+        showToast('Please fill in required fields', 'warning');
+        return;
+    }
+    
+    const total = delivery + online + aggregator + dining;
+    const average = transactions > 0 ? (total / transactions).toFixed(2) : 0;
+    
+    const entry = {
+        id: Date.now(),
+        branch,
+        date,
+        delivery,
+        online,
+        aggregator,
+        dining,
+        total,
+        transactions,
+        average,
+        target,
+        achievement: target > 0 ? ((total / target) * 100).toFixed(1) : 0,
+        createdDate: new Date().toISOString()
+    };
+    
+    salesEntries.push(entry);
+    localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
+    
+    // Reset form
+    document.getElementById('quickDataForm').reset();
+    document.getElementById('quickDate').valueAsDate = new Date();
+    
+    // Update displays
+    renderDataTable();
+    renderKPIs();
+    updateSalesBreakdown();
+    renderBranchPerformance();
+    
+    showToast('Sales data added successfully!');
 }
 
-function calc(){
- let s=data.reduce((a,b)=>a+b.sales,0);
- let t=data.reduce((a,b)=>a+b.target,0);
- let trc=data.reduce((a,b)=>a+b.trc,0);
- document.getElementById("tSales").innerText=s;
- document.getElementById("tAch").innerText=t?((s/t)*100).toFixed(1)+"%":"0%";
- document.getElementById("tAvg").innerText=trc?(s/trc).toFixed(2):0;
+// Open add modal
+function openAddModal() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Add Sales Data';
+    document.getElementById('dataForm').reset();
+    document.getElementById('modalDate').valueAsDate = new Date();
+    document.getElementById('dataModal').classList.add('show');
 }
 
-render(); calc();
+// Edit data
+function editData(id) {
+    const entry = salesEntries.find(e => e.id === id);
+    if (!entry) return;
+    
+    editingId = id;
+    document.getElementById('modalTitle').textContent = 'Edit Sales Data';
+    document.getElementById('editId').value = id;
+    document.getElementById('modalBranch').value = entry.branch;
+    document.getElementById('modalDate').value = entry.date;
+    document.getElementById('modalDelivery').value = entry.delivery;
+    document.getElementById('modalOnline').value = entry.online;
+    document.getElementById('modalAggregator').value = entry.aggregator;
+    document.getElementById('modalDining').value = entry.dining;
+    document.getElementById('modalTransactions').value = entry.transactions;
+    document.getElementById('modalTarget').value = entry.target;
+    
+    document.getElementById('dataModal').classList.add('show');
+}
+
+// Save data (from modal)
+function saveData(event) {
+    event.preventDefault();
+    
+    const branch = document.getElementById('modalBranch').value;
+    const date = document.getElementById('modalDate').value;
+    const delivery = parseFloat(document.getElementById('modalDelivery').value) || 0;
+    const online = parseFloat(document.getElementById('modalOnline').value) || 0;
+    const aggregator = parseFloat(document.getElementById('modalAggregator').value) || 0;
+    const dining = parseFloat(document.getElementById('modalDining').value) || 0;
+    const transactions = parseInt(document.getElementById('modalTransactions').value) || 0;
+    const target = parseFloat(document.getElementById('modalTarget').value) || 0;
+    
+    if (!branch || !date) {
+        showToast('Please fill in required fields', 'warning');
+        return;
+    }
+    
+    const total = delivery + online + aggregator + dining;
+    const average = transactions > 0 ? (total / transactions).toFixed(2) : 0;
+    
+    const entry = {
+        id: editingId || Date.now(),
+        branch,
+        date,
+        delivery,
+        online,
+        aggregator,
+        dining,
+        total,
+        transactions,
+        average,
+        target,
+        achievement: target > 0 ? ((total / target) * 100).toFixed(1) : 0,
+        createdDate: editingId ? salesEntries.find(e => e.id === editingId).createdDate : new Date().toISOString(),
+        updatedDate: editingId ? new Date().toISOString() : null
+    };
+    
+    if (editingId) {
+        const index = salesEntries.findIndex(e => e.id === editingId);
+        salesEntries[index] = entry;
+        showToast('Sales data updated successfully!');
+    } else {
+        salesEntries.push(entry);
+        showToast('Sales data added successfully!');
+    }
+    
+    localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
+    
+    closeModal();
+    renderDataTable();
+    renderKPIs();
+    updateSalesBreakdown();
+    renderBranchPerformance();
+}
+
+// Delete data
+function deleteData(id) {
+    if (confirm('Are you sure you want to delete this entry?')) {
+        salesEntries = salesEntries.filter(e => e.id !== id);
+        localStorage.setItem("crispySalesData", JSON.stringify(salesEntries));
+        renderDataTable();
+        renderKPIs();
+        updateSalesBreakdown();
+        renderBranchPerformance();
+        showToast('Sales data deleted successfully!');
+    }
+}
+
+// Close modal
+function closeModal() {
+    document.getElementById('dataModal').classList.remove('show');
+    editingId = null;
+}
+
+// Render data table
+function renderDataTable() {
+    const tbody = document.getElementById('dataTableBody');
+    const branchFilter = document.getElementById('dataBranchFilter').value;
+    const periodFilter = document.getElementById('dataPeriodFilter').value;
+    
+    let filteredEntries = [...salesEntries];
+    
+    // Apply filters
+    if (branchFilter !== 'all') {
+        filteredEntries = filteredEntries.filter(e => e.branch === branchFilter);
+    }
+    
+    if (periodFilter !== 'all') {
+        const today = new Date();
+        filteredEntries = filteredEntries.filter(entry => {
+            const entryDate = new Date(entry.date);
+            
+            switch(periodFilter) {
+                case 'today':
+                    return entryDate.toDateString() === today.toDateString();
+                case 'week':
+                    const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return entryDate >= weekAgo;
+                case 'month':
+                    return entryDate.getMonth() === today.getMonth() && 
+                           entryDate.getFullYear() === today.getFullYear();
+                default:
+                    return true;
+            }
+        });
+    }
+    
+    // Sort by date (newest first)
+    filteredEntries.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    if (filteredEntries.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px;">No data found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filteredEntries.map(entry => `
+        <tr>
+            <td>${formatDate(entry.date)}</td>
+            <td><strong>${entry.branch.replace('Crispy Chicken ', '')}</strong></td>
+            <td>AED ${entry.delivery.toFixed(2)}</td>
+            <td>AED ${entry.online.toFixed(2)}</td>
+            <td>AED ${entry.aggregator.toFixed(2)}</td>
+            <td>AED ${entry.dining.toFixed(2)}</td>
+            <td><strong>AED ${entry.total.toFixed(2)}</strong></td>
+            <td>${entry.transactions}</td>
+            <td>AED ${entry.average}</td>
+            <td>
+                <button class="edit-btn" onclick="editData(${entry.id})">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+                <button class="delete-btn" onclick="deleteData(${entry.id})">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Render KPIs (updated to use stored data)
+function renderKPIs() {
+    const kpiSection = document.getElementById('kpiSection');
+    
+    // Calculate totals from stored data
+    const totals = salesEntries.reduce((acc, entry) => {
+        acc.totalSales += entry.total;
+        acc.totalTransactions += entry.transactions;
+        acc.deliverySales += entry.delivery;
+        acc.onlineSales += entry.online;
+        acc.aggregatorSales += entry.aggregator;
+        acc.diningSales += entry.dining;
+        return acc;
+    }, {
+        totalSales: 0,
+        totalTransactions: 0,
+        deliverySales: 0,
+        onlineSales: 0,
+        aggregatorSales: 0,
+        diningSales: 0
+    });
+    
+    const avgTicket = totals.totalTransactions > 0 ? (totals.totalSales / totals.totalTransactions).toFixed(2) : 0;
+    
+    kpiSection.innerHTML = `
+        <div class="kpi-card">
+            <i class="fas fa-cash-register kpi-icon"></i>
+            <div class="kpi-title">Total Sales</div>
+            <div class="kpi-value">AED ${totals.totalSales.toLocaleString()}</div>
+            <div class="kpi-change positive">
+                <i class="fas fa-arrow-up"></i> Based on entered data
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-shopping-cart kpi-icon"></i>
+            <div class="kpi-title">Total Transactions</div>
+            <div class="kpi-value">${totals.totalTransactions.toLocaleString()}</div>
+            <div class="kpi-change positive">
+                <i class="fas fa-arrow-up"></i> Based on entered data
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-chart-line kpi-icon"></i>
+            <div class="kpi-title">Average Ticket</div>
+            <div class="kpi-value">AED ${avgTicket}</div>
+            <div class="kpi-change positive">
+                <i class="fas fa-arrow-up"></i> Based on entered data
+            </div>
+        </div>
+        <div class="kpi-card">
+            <i class="fas fa-database kpi-icon"></i>
+            <div class="kpi-title">Data Entries</div>
+            <div class="kpi-value">${salesEntries.length}</div>
+            <div class="kpi-change positive">
+                <i class="fas fa-arrow-up"></i> Total records
+            </div>
+        </div>
+    `;
+}
+
+// Initialize charts (placeholder functions)
+function initSalesTrendChart() {
+    const ctx = document.getElementById('salesTrendChart').getContext('2d');
+    // Chart implementation would go here
+    ctx.fillStyle = '#666';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Sales trend chart will appear here', ctx.canvas.width/2, ctx.canvas.height/2);
+}
+
+function initSalesDistributionChart() {
+    const ctx = document.getElementById('salesDistributionChart').getContext('2d');
+    // Chart implementation would go here
+    ctx.fillStyle = '#666';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Distribution chart will appear here', ctx.canvas.width/2, ctx.canvas.height/2);
+}
+
+function updateSalesChart() {
+    showToast('Chart updated');
+}
+
+function updateDistributionChart() {
+    showToast('Distribution changed');
+}
+
+function updateSalesBreakdown() {
+    // Placeholder implementation
+    const breakdown = document.getElementById('salesBreakdown');
+    breakdown.innerHTML = '<p style="text-align: center; padding: 40px;">Sales breakdown will be calculated from entered data</p>';
+}
+
+function renderBranchPerformance() {
+    // Placeholder implementation
+    const performance = document.getElementById('branchPerformance');
+    performance.innerHTML = '<p style="text-align: center; padding: 40px;">Branch performance will be calculated from entered data</p>';
+}
+
+// Refresh sales data
+function refreshSalesData() {
+    renderDataTable();
+    renderKPIs();
+    showToast('Data refreshed successfully!');
+}
+
+// Export sales data
+function exportSalesData() {
+    if (salesEntries.length === 0) {
+        showToast('No data to export', 'warning');
+        return;
+    }
+    
+    let csv = 'Date,Branch,Delivery,Online,Aggregator,Dining,Total,Transactions,Average,Target,Achievement,Created Date\n';
+    
+    salesEntries.forEach(entry => {
+        csv += `"${entry.date}","${entry.branch}",${entry.delivery},${entry.online},${entry.aggregator},${entry.dining},${entry.total},${entry.transactions},${entry.average},${entry.target},${entry.achievement}%,${entry.createdDate}\n`;
+    });
+    
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `crispy_chicken_sales_data_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    showToast('Sales data exported successfully!');
+}
+
+// Format date
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-US', options);
+}
+
+// Show toast notification
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    toast.style.background = type === 'warning' ? 'var(--warning-color)' : 'var(--success-color)';
+    
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
 </script>
-
 </body>
 </html>
