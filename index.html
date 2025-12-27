@@ -67,7 +67,7 @@ button.outline:hover { background: var(--primary-color); color: white; }
 .kpi-sub { font-size: 0.85rem; color: #888; }
 .kpi-icon { position: absolute; right: 20px; top: 20px; opacity: 0.1; font-size: 3rem; color: var(--primary-color); }
 
-/* Special styling for the aggregate Call Center card */
+/* Call Center Card */
 .kpi-card.aggregate { border: 2px solid var(--warning-color); background: #fffdf5; }
 .kpi-card.aggregate .kpi-icon { color: var(--warning-color); }
 
@@ -92,12 +92,21 @@ input:focus, select:focus { border-color: var(--primary-color); background: whit
 .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
 
 /* Table */
-.table-controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+.table-controls { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; }
 .data-table-wrapper { overflow-x: auto; border-radius: 8px; border: 1px solid #e5e7eb; }
 table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 th { background: var(--dark-color); color: white; padding: 14px 16px; text-align: left; }
 td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
 tr:hover { background: #f9fafb; }
+
+/* Date Range Inputs */
+#dateRangeInputs {
+    display: none;
+    flex: 1;
+    gap: 10px;
+    animation: fadeIn 0.3s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* Modal */
 .modal {
@@ -215,12 +224,23 @@ tr:hover { background: #f9fafb; }
                 </div>
                 <div class="filter-group" style="flex:1; min-width:150px;">
                     <label>Time Period</label>
-                    <select id="f_period" onchange="updateDashboard()">
-                        <option value="all">All Time</option>
-                        <option value="today">Today</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
+                    <select id="f_period" onchange="toggleDateInputs(); updateDashboard()">
+                        <option value="today">Daily (Today)</option>
+                        <option value="week">Weekly (Last 7 Days)</option>
+                        <option value="month">Monthly (Last 30 Days)</option>
+                        <option value="custom">Day To Day (Custom Range)</option>
                     </select>
+                </div>
+                <!-- Custom Date Inputs (Hidden by default) -->
+                <div id="dateRangeInputs">
+                    <div style="flex:1;">
+                        <label>Start Date</label>
+                        <input type="date" id="f_start" onchange="updateDashboard()">
+                    </div>
+                    <div style="flex:1;">
+                        <label>End Date</label>
+                        <input type="date" id="f_end" onchange="updateDashboard()">
+                    </div>
                 </div>
             </div>
             <div class="data-table-wrapper">
@@ -295,11 +315,10 @@ tr:hover { background: #f9fafb; }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // --- CONFIGURATION & DATA ---
-const STORAGE_KEY = 'crispy_sales_v5';
+const STORAGE_KEY = 'crispy_sales_v6';
 let salesData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let chartInstances = {};
 
-// Targets provided by user (Including Call Center)
 const BRANCH_TARGETS = {
     "Crispy Chicken Hamdan": 27097,
     "Crispy Chicken Shabia": 25806,
@@ -315,9 +334,14 @@ const BRANCH_TARGETS = {
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('q_date').value = today;
-    document.getElementById('m_date').value = today;
+    const todayStr = new Date().toISOString().split('T')[0];
+    
+    // Set defaults
+    document.getElementById('q_date').value = todayStr;
+    document.getElementById('m_date').value = todayStr;
+    document.getElementById('f_start').value = todayStr;
+    document.getElementById('f_end').value = todayStr;
+    
     updateCurrentDate();
     populateBranchFilter();
     initCharts();
@@ -349,6 +373,16 @@ function autoFillTarget(branchSelectId, targetInputId) {
     }
 }
 
+function toggleDateInputs() {
+    const type = document.getElementById('f_period').value;
+    const inputs = document.getElementById('dateRangeInputs');
+    if (type === 'custom') {
+        inputs.style.display = 'flex';
+    } else {
+        inputs.style.display = 'none';
+    }
+}
+
 // --- CORE LOGIC ---
 function updateDashboard() {
     const filtered = getFilteredData();
@@ -365,6 +399,7 @@ function updateDashboard() {
 function getFilteredData() {
     const branch = document.getElementById('f_branch').value;
     const period = document.getElementById('f_period').value;
+    
     const today = new Date();
     today.setHours(0,0,0,0);
 
@@ -373,13 +408,26 @@ function getFilteredData() {
         const itemDate = new Date(item.date);
         itemDate.setHours(0,0,0,0);
 
-        if (period === 'today') dateMatch = itemDate.getTime() === today.getTime();
-        else if (period === 'week') {
-            const weekAgo = new Date(today); weekAgo.setDate(today.getDate() - 7);
+        if (period === 'today') {
+            dateMatch = itemDate.getTime() === today.getTime();
+        } else if (period === 'week') {
+            const weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
             dateMatch = itemDate >= weekAgo;
-        }
-        else if (period === 'month') {
-            dateMatch = itemDate.getMonth() === today.getMonth() && itemDate.getFullYear() === today.getFullYear();
+        } else if (period === 'month') {
+            const monthAgo = new Date(today);
+            monthAgo.setDate(today.getDate() - 30);
+            dateMatch = itemDate >= monthAgo;
+        } else if (period === 'custom') {
+            const startVal = document.getElementById('f_start').value;
+            const endVal = document.getElementById('f_end').value;
+            if(startVal && endVal) {
+                const start = new Date(startVal); start.setHours(0,0,0,0);
+                const end = new Date(endVal); end.setHours(0,0,0,0);
+                dateMatch = itemDate >= start && itemDate <= end;
+            } else {
+                dateMatch = false; // Require dates if custom selected
+            }
         }
         
         return dateMatch && (branch === 'all' || item.branch === branch);
@@ -393,9 +441,8 @@ function renderKPIs(data) {
     const totalTarget = data.reduce((sum, i) => sum + i.target, 0);
     const achievement = totalTarget ? Math.round((totalSales/totalTarget)*100) : 0;
 
-    // Calculate Call Center Aggregate (Sum of Delivery from ALL branches)
     const totalDelivery = data.reduce((sum, i) => sum + i.delivery, 0);
-    const callCenterTarget = 8548; // Daily target as requested
+    const callCenterTarget = 8548; 
     const callCenterAch = Math.round((totalDelivery / callCenterTarget) * 100);
 
     document.getElementById('kpiSection').innerHTML = `
@@ -403,9 +450,7 @@ function renderKPIs(data) {
             <i class="fas fa-headset kpi-icon"></i>
             <div class="kpi-title">Call Center (Delivery Agg.)</div>
             <div class="kpi-value" style="color:var(--warning-color)">AED ${totalDelivery.toLocaleString()}</div>
-            <div class="kpi-sub">
-                <strong>${callCenterAch}%</strong> of Target (8,548)
-            </div>
+            <div class="kpi-sub"><strong>${callCenterAch}%</strong> of Target (8,548)</div>
         </div>
         <div class="kpi-card">
             <i class="fas fa-coins kpi-icon"></i>
