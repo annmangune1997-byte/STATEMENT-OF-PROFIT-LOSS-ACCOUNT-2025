@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crispy Chicken - Editable Targets</title>
+<title>Crispy Chicken - Professional Performance</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 :root {
@@ -103,10 +103,7 @@ td { padding: 12px 16px; border-bottom: 1px solid #f0f0f0; vertical-align: middl
 tr:hover { background: #f9fafb; }
 
 #dateRangeInputs {
-    display: none;
-    flex: 1;
-    gap: 10px;
-    animation: fadeIn 0.3s;
+    display: none; flex:1; gap: 10px; animation: fadeIn 0.3s;
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
@@ -135,6 +132,41 @@ tr:hover { background: #f9fafb; }
 }
 .toast.show { transform: translateY(0); opacity: 1; }
 
+/* --- NEW PERFORMANCE SECTION STYLES --- */
+.performance-section {
+    background: white; padding: 25px; border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg); margin-bottom: 25px;
+}
+
+.rank-table {
+    width: 100%; border-collapse: collapse; font-size: 0.95rem;
+    margin-bottom: 30px;
+}
+.rank-table th {
+    background: #2c3e50; color: white; padding: 15px; text-align: left;
+    font-weight: 600;
+}
+.rank-table td {
+    padding: 15px; border-bottom: 1px solid #eee; vertical-align: middle;
+}
+
+.rank-badge {
+    display: inline-flex; justify-content: center; align-items: center;
+    width: 35px; height: 35px; border-radius: 50%;
+    font-weight: bold; color: white;
+    background: #ccc;
+}
+.rank-1 { background: #FFD700; box-shadow: 0 0 10px #FFD700; } /* Gold */
+.rank-2 { background: #C0C0C0; } /* Silver */
+.rank-3 { background: #CD7F32; } /* Bronze */
+
+.status-badge {
+    padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600;
+}
+.status-top { background: #d1fae5; color: #065f46; }
+.status-ok { background: #e0f2fe; color: #1e40af; }
+.status-low { background: #fee2e2; color: #991b1b; }
+
 @media (max-width: 1200px) {
     .dashboard-grid { grid-template-columns: 1fr; }
     .charts-row { grid-template-columns: 1fr; }
@@ -148,7 +180,7 @@ tr:hover { background: #f9fafb; }
         <h1><i class="fas fa-drumstick-bite"></i> Crispy Chicken Analytics</h1>
         <div class="header-actions">
             <div class="date-display" id="currentDate"><i class="far fa-calendar-alt"></i> <span>--</span></div>
-            <button class="outline" onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-upload"></i> Import</button>
+            <button class="outline" onclick="document.getElementById('csvInput').click()"><i class="fas fa-file-upload"></i> Import CSV</button>
             <input type="file" id="csvInput" accept=".csv" style="display: none;" onchange="importSalesData(this)">
             <button class="secondary" onclick="exportSalesData()"><i class="fas fa-download"></i> Export</button>
             <button class="success" onclick="openModal()"><i class="fas fa-plus"></i> New Entry</button>
@@ -177,6 +209,38 @@ tr:hover { background: #f9fafb; }
         </div>
     </section>
 
+    <!-- NEW PROFESSIONAL PERFORMANCE SECTION -->
+    <section class="performance-section" id="performanceSection">
+        <div class="card-header">
+            <h2><i class="fas fa-trophy"></i> Branch Performance Ranking</h2>
+            <div style="font-size:0.9rem; color:#666;">Based on selected time period</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="data-table-wrapper">
+                <table class="rank-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">#</th>
+                            <th>Branch</th>
+                            <th style="text-align: right;">Target</th>
+                            <th style="text-align: right;">Actual</th>
+                            <th style="text-align: center;">Ach.</th>
+                            <th style="text-align: center;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankTableBody"></tbody>
+                </table>
+            </div>
+            <div class="chart-card" style="margin-bottom: 0;">
+                <div class="card-header" style="margin-bottom: 10px;">
+                    <h2 style="font-size: 1rem;">Target vs Actual</h2>
+                </div>
+                <div class="chart-container" style="height: 300px;"><canvas id="performanceChart"></canvas></div>
+            </div>
+        </div>
+    </section>
+    <!-- END PERFORMANCE SECTION -->
+
     <main class="dashboard-grid">
         <!-- Quick Entry -->
         <aside class="data-entry-panel">
@@ -186,14 +250,14 @@ tr:hover { background: #f9fafb; }
                     <label>Branch *</label>
                     <select id="q_branch" required onchange="updateCalculatedTarget('q_branch', 'q_date', 'q_target')">
                         <option value="">Select Branch</option>
-                        <option value="Crispy Chicken Hamdan">Hamdan</option>
-                        <option value="Crispy Chicken Shabia">Shabia</option>
+                        <option value="Crispy Chicken Hamdan">Hamdan St</option>
+                        <option value="Crispy Chicken Shabiya">Shabiya 11</option>
                         <option value="Crispy Chicken Khaldia">Khaldia</option>
-                        <option value="Crispy Chicken Mourror">Mourror</option>
-                        <option value="Crispy Chicken Barsha">Barsha</option>
-                        <option value="Crispy Chicken Satwa">Satwa</option>
-                        <option value="Crispy Chicken Electra">Electra</option>
-                        <option value="Crispy Chicken Rigga">Rigga</option>
+                        <option value="Crispy Chicken Muroor">Muroor</option>
+                        <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                        <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                        <option value="Crispy Chicken ELctria">ELctria</option>
+                        <option value="Crispy Chicken Al Rgga">Al Rgga</option>
                         <option value="Crispy Chicken Majaz">Majaz</option>
                         <option value="Crispy Chicken Call Center">Call Center</option>
                     </select>
@@ -212,7 +276,6 @@ tr:hover { background: #f9fafb; }
                     <div class="form-group"><label>Transactions</label><input type="number" id="q_trans" min="0" placeholder="0"></div>
                     <div class="form-group">
                         <label>Daily Target</label>
-                        <!-- REMOVED 'readonly' to allow manual overrides for cumulative entries -->
                         <input type="number" id="q_target" step="0.01" class="auto-calc" placeholder="Auto-calc..." title="Auto-calculated (You can edit)">
                     </div>
                 </div>
@@ -237,16 +300,9 @@ tr:hover { background: #f9fafb; }
                         <option value="custom">Day To Day (Custom Range)</option>
                     </select>
                 </div>
-                <!-- Custom Date Inputs -->
                 <div id="dateRangeInputs">
-                    <div style="flex:1;">
-                        <label>Start Date</label>
-                        <input type="date" id="f_start" onchange="updateDashboard()">
-                    </div>
-                    <div style="flex:1;">
-                        <label>End Date</label>
-                        <input type="date" id="f_end" onchange="updateDashboard()">
-                    </div>
+                    <div style="flex:1;"><label>Start Date</label><input type="date" id="f_start" onchange="updateDashboard()"></div>
+                    <div style="flex:1;"><label>End Date</label><input type="date" id="f_end" onchange="updateDashboard()"></div>
                 </div>
             </div>
             <div class="data-table-wrapper">
@@ -285,14 +341,14 @@ tr:hover { background: #f9fafb; }
                 <label>Branch *</label>
                 <select id="m_branch" required onchange="updateCalculatedTarget('m_branch', 'm_date', 'm_target')">
                     <option value="">Select Branch</option>
-                    <option value="Crispy Chicken Hamdan">Hamdan</option>
-                    <option value="Crispy Chicken Shabia">Shabia</option>
+                    <option value="Crispy Chicken Hamdan">Hamdan St</option>
+                    <option value="Crispy Chicken Shabiya">Shabiya 11</option>
                     <option value="Crispy Chicken Khaldia">Khaldia</option>
-                    <option value="Crispy Chicken Mourror">Mourror</option>
-                    <option value="Crispy Chicken Barsha">Barsha</option>
-                    <option value="Crispy Chicken Satwa">Satwa</option>
-                    <option value="Crispy Chicken Electra">Electra</option>
-                    <option value="Crispy Chicken Rigga">Rigga</option>
+                    <option value="Crispy Chicken Muroor">Muroor</option>
+                    <option value="Crispy Chicken Al Barsha">Al Barsha</option>
+                    <option value="Crispy Chicken Al Satwa">Al Satwa</option>
+                    <option value="Crispy Chicken ELctria">ELctria</option>
+                    <option value="Crispy Chicken Al Rgga">Al Rgga</option>
                     <option value="Crispy Chicken Majaz">Majaz</option>
                     <option value="Crispy Chicken Call Center">Call Center</option>
                 </select>
@@ -308,7 +364,6 @@ tr:hover { background: #f9fafb; }
                 <div class="form-group"><label>Transactions</label><input type="number" id="m_trans" min="0"></div>
                 <div class="form-group">
                     <label>Daily Target</label>
-                    <!-- REMOVED 'readonly' to allow manual overrides -->
                     <input type="number" id="m_target" step="0.01" class="auto-calc" placeholder="Auto-calc..." title="Auto-calculated (You can edit)">
                 </div>
             </div>
@@ -325,20 +380,19 @@ tr:hover { background: #f9fafb; }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // --- CONFIGURATION & DATA ---
-const STORAGE_KEY = 'crispy_sales_v8';
+const STORAGE_KEY = 'crispy_sales_v13';
 let salesData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let chartInstances = {};
 
-// Monthly Targets (Source of Truth)
 const BRANCH_MONTHLY_TARGETS = {
     "Crispy Chicken Hamdan": 840000,
-    "Crispy Chicken Shabia": 800000,
+    "Crispy Chicken Shabiya": 800000,
     "Crispy Chicken Khaldia": 750000,
-    "Crispy Chicken Mourror": 620000,
-    "Crispy Chicken Barsha": 800000,
-    "Crispy Chicken Satwa": 650000,
-    "Crispy Chicken Electra": 1000000,
-    "Crispy Chicken Rigga": 815000,
+    "Crispy Chicken Muroor": 620000,
+    "Crispy Chicken Al Barsha": 800000,
+    "Crispy Chicken Al Satwa": 650000,
+    "Crispy Chicken ELctria": 1000000,
+    "Crispy Chicken Al Rgga": 815000,
     "Crispy Chicken Majaz": 400000,
     "Crispy Chicken Call Center": 265000
 };
@@ -346,7 +400,6 @@ const BRANCH_MONTHLY_TARGETS = {
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
     const todayStr = new Date().toISOString().split('T')[0];
-    
     document.getElementById('q_date').value = todayStr;
     document.getElementById('m_date').value = todayStr;
     document.getElementById('f_start').value = todayStr;
@@ -375,16 +428,11 @@ function populateBranchFilter() {
     });
 }
 
-/**
- * LOGIC: Calculate Daily Target based on Calendar Date
- * Formula: Monthly Target / Days in Selected Month
- */
 function updateCalculatedTarget(branchSelectId, dateInputId, targetInputId) {
     const branchVal = document.getElementById(branchSelectId).value;
     const dateVal = document.getElementById(dateInputId).value;
     const targetInput = document.getElementById(targetInputId);
 
-    // Only calculate if field is not currently focused (allows manual override without being wiped)
     if (document.activeElement !== targetInput) {
         if (branchVal && dateVal && BRANCH_MONTHLY_TARGETS[branchVal]) {
             const monthlyTarget = BRANCH_MONTHLY_TARGETS[branchVal];
@@ -409,6 +457,7 @@ function updateDashboard() {
     const filtered = getFilteredData();
     renderKPIs(filtered);
     renderTable(filtered);
+    renderPerformanceBoard(filtered); // NEW: Render Ranking
     updateCharts(filtered);
     
     const table = document.getElementById('dataTable');
@@ -420,7 +469,6 @@ function updateDashboard() {
 function getFilteredData() {
     const branch = document.getElementById('f_branch').value;
     const period = document.getElementById('f_period').value;
-    
     const today = new Date();
     today.setHours(0,0,0,0);
 
@@ -450,12 +498,11 @@ function getFilteredData() {
                 dateMatch = false;
             }
         }
-        
         return dateMatch && (branch === 'all' || item.branch === branch);
     }).sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
-// --- RENDERING ---
+// --- RENDERING KPI ---
 function renderKPIs(data) {
     const totalSales = data.reduce((sum, i) => sum + i.total, 0);
     const totalTrans = data.reduce((sum, i) => sum + i.transactions, 0);
@@ -463,15 +510,35 @@ function renderKPIs(data) {
     const achievement = totalTarget ? Math.round((totalSales/totalTarget)*100) : 0;
 
     const totalDelivery = data.reduce((sum, i) => sum + i.delivery, 0);
-    const callCenterSavedTarget = data.filter(i=>i.branch.includes("Call Center")).reduce((s,i)=>s+i.target,0);
-    const callCenterAch = callCenterSavedTarget ? Math.round((totalDelivery / callCenterSavedTarget) * 100) : 0;
+    
+    // Call Center Logic
+    let selectedDays = 1;
+    const period = document.getElementById('f_period').value;
+    if (period === 'today') selectedDays = 1;
+    else if (period === 'week') selectedDays = 7;
+    else if (period === 'month') selectedDays = 31;
+    else if (period === 'custom') {
+        const startVal = document.getElementById('f_start').value;
+        const endVal = document.getElementById('f_end').value;
+        if(startVal && endVal) {
+            const start = new Date(startVal);
+            const end = new Date(endVal);
+            const diffTime = Math.abs(end - start);
+            selectedDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        }
+    }
+
+    const callCenterMonthlyTarget = 265000;
+    const callCenterDailyTarget = callCenterMonthlyTarget / 31;
+    const kpiCallCenterTarget = callCenterDailyTarget * selectedDays;
+    const callCenterAch = kpiCallCenterTarget ? Math.round((totalDelivery / kpiCallCenterTarget) * 100) : 0;
 
     document.getElementById('kpiSection').innerHTML = `
         <div class="kpi-card aggregate">
             <i class="fas fa-headset kpi-icon"></i>
             <div class="kpi-title">Call Center (Delivery Agg.)</div>
             <div class="kpi-value" style="color:var(--warning-color)">AED ${totalDelivery.toLocaleString()}</div>
-            <div class="kpi-sub"><strong>${callCenterAch}%</strong> (Target: AED ${callCenterSavedTarget.toLocaleString()})</div>
+            <div class="kpi-sub"><strong>${callCenterAch}%</strong> (Target: AED ${kpiCallCenterTarget.toLocaleString(undefined, {maximumFractionDigits:0})})</div>
         </div>
         <div class="kpi-card">
             <i class="fas fa-coins kpi-icon"></i>
@@ -492,6 +559,99 @@ function renderKPIs(data) {
             <div class="kpi-sub">Target: AED ${totalTarget.toLocaleString()}</div>
         </div>
     `;
+}
+
+// --- NEW: RENDER PROFESSIONAL PERFORMANCE BOARD ---
+function renderPerformanceBoard(data) {
+    if(data.length === 0) {
+        document.getElementById('rankTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;">No data for this period</td></tr>';
+        return;
+    }
+
+    // Aggregate by branch
+    const branchStats = {};
+    data.forEach(item => {
+        if (!branchStats[item.branch]) {
+            branchStats[item.branch] = { sales: 0, target: 0, trans: 0 };
+        }
+        branchStats[item.branch].sales += item.total;
+        branchStats[item.branch].target += item.target;
+        branchStats[item.branch].trans += item.transactions;
+    });
+
+    // Convert to array and calculate achievements
+    const ranking = Object.keys(branchStats).map(branch => {
+        const stats = branchStats[branch];
+        const ach = stats.target ? (stats.sales / stats.target) * 100 : 0;
+        let status = 'status-ok';
+        let label = 'On Track';
+        
+        if (ach >= 100) { status = 'status-top'; label = 'Top Performer'; }
+        else if (ach < 90) { status = 'status-low'; label = 'Needs Action'; }
+        else { label = 'On Track'; }
+
+        return {
+            branch,
+            sales: stats.sales,
+            target: stats.target,
+            ach: ach.toFixed(1),
+            statusClass: status,
+            statusLabel: label
+        };
+    });
+
+    // Sort by Achievement (High to Low)
+    ranking.sort((a, b) => parseFloat(b.ach) - parseFloat(a.ach));
+
+    // Render Table
+    document.getElementById('rankTableBody').innerHTML = ranking.map((r, index) => `
+        <tr>
+            <td><span class="rank-badge rank-${index+1}">${index + 1}</span></td>
+            <td><strong>${r.branch.replace('Crispy Chicken ', '')}</strong></td>
+            <td style="text-align: right;">AED ${r.target.toLocaleString()}</td>
+            <td style="text-align: right; font-weight:bold; color:var(--primary-color)">AED ${r.sales.toLocaleString()}</td>
+            <td style="text-align: center; font-weight:bold;">${r.ach}%</td>
+            <td style="text-align: center;"><span class="status-badge ${r.statusClass}">${r.statusLabel}</span></td>
+        </tr>
+    `).join('');
+
+    updatePerformanceChart(ranking);
+}
+
+function updatePerformanceChart(rankingData) {
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    if(!chartInstances.perf) {
+        chartInstances.perf = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: [], datasets: [] },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: { legend: { position: 'bottom' } }
+            }
+        });
+    }
+
+    chartInstances.perf.data.labels = rankingData.map(r => r.branch.replace('Crispy Chicken ', ''));
+    chartInstances.perf.data.datasets = [
+        {
+            label: 'Target',
+            data: rankingData.map(r => r.target),
+            backgroundColor: '#e2e8f0',
+            borderRadius: 4
+        },
+        {
+            label: 'Actual Sales',
+            data: rankingData.map(r => r.sales),
+            backgroundColor: (ctx) => {
+                const value = ctx.raw;
+                const target = ctx.chart.data.datasets[0].data[ctx.dataIndex];
+                return value >= target ? '#2a9d8f' : '#e76f51';
+            },
+            borderRadius: 4
+        }
+    ];
+    chartInstances.perf.update();
 }
 
 function renderTable(data) {
@@ -623,7 +783,7 @@ function updateCharts(data) {
     chartInstances.dist.update();
 }
 
-// --- UI HELPERS ---
+// --- IMPORT/EXPORT HELPERS ---
 function openModal() {
     document.getElementById('modalForm').reset();
     document.getElementById('m_id').value = '';
@@ -647,22 +807,37 @@ function exportSalesData() {
     const blob = new Blob([csv], {type:'text/csv'});
     const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='crispy_export.csv'; a.click();
 }
+
 function importSalesData(input) {
-    const r = new FileReader(); r.onload=e=>{
-        const rows = e.target.result.split('\n').slice(1);
-        rows.forEach(row=>{
-            const c = row.split(',');
-            if(c.length>5) {
+    const r = new FileReader();
+    r.onload = function(e) {
+        const text = e.target.result;
+        const rows = text.split('\n');
+        const dataRows = rows.slice(1);
+        
+        dataRows.forEach(row => {
+            const separator = row.includes('\t') ? '\t' : ',';
+            const c = row.split(separator);
+            if(c.length >= 2) {
+                const clean = (str) => str ? str.replace(/"/g, '') : '';
                 salesData.push({
-                    id: Date.now()+Math.random(),
-                    date: c[1], branch: c[2].replace(/"/g,''),
-                    delivery: parseFloat(c[3])||0, online: parseFloat(c[4])||0, aggregator: parseFloat(c[5])||0, dining: parseFloat(c[6])||0,
-                    total: parseFloat(c[7])||0, transactions: parseInt(c[8])||0, target: parseFloat(c[9])||0
+                    id: parseFloat(c[0]) || Date.now(),
+                    date: clean(c[1]), 
+                    branch: clean(c[2]),
+                    delivery: parseFloat(c[3])||0, 
+                    online: parseFloat(c[4])||0, 
+                    aggregator: parseFloat(c[5])||0, 
+                    dining: parseFloat(c[6])||0,
+                    total: parseFloat(c[7])||0, 
+                    transactions: parseInt(c[8])||0, 
+                    target: parseFloat(c[9])||0
                 });
             }
         });
-        persist(); showToast('Imported');
-    }; r.readAsText(input.files[0]);
+        persist(); 
+        showToast(`Imported ${dataRows.length} records`);
+    };
+    r.readAsText(input.files[0]);
 }
 </script>
 </body>
