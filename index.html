@@ -67,6 +67,10 @@ button.outline:hover { background: var(--primary-color); color: white; }
 .kpi-sub { font-size: 0.85rem; color: #888; }
 .kpi-icon { position: absolute; right: 20px; top: 20px; opacity: 0.1; font-size: 3rem; color: var(--primary-color); }
 
+/* Special styling for the aggregate Call Center card */
+.kpi-card.aggregate { border: 2px solid var(--warning-color); background: #fffdf5; }
+.kpi-card.aggregate .kpi-icon { color: var(--warning-color); }
+
 /* Charts */
 .charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 25px; }
 .chart-card { background: white; padding: 25px; border-radius: var(--border-radius); box-shadow: var(--shadow); }
@@ -180,6 +184,7 @@ tr:hover { background: #f9fafb; }
                         <option value="Crispy Chicken Electra">Electra</option>
                         <option value="Crispy Chicken Rigga">Rigga</option>
                         <option value="Crispy Chicken Majaz">Majaz</option>
+                        <option value="Crispy Chicken Call Center">Call Center</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -263,6 +268,7 @@ tr:hover { background: #f9fafb; }
                     <option value="Crispy Chicken Electra">Electra</option>
                     <option value="Crispy Chicken Rigga">Rigga</option>
                     <option value="Crispy Chicken Majaz">Majaz</option>
+                    <option value="Crispy Chicken Call Center">Call Center</option>
                 </select>
             </div>
             <div class="form-group"><label>Date *</label><input type="date" id="m_date" required></div>
@@ -289,11 +295,11 @@ tr:hover { background: #f9fafb; }
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // --- CONFIGURATION & DATA ---
-const STORAGE_KEY = 'crispy_sales_v4';
+const STORAGE_KEY = 'crispy_sales_v5';
 let salesData = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let chartInstances = {};
 
-// Targets provided by user (Updated Spellings)
+// Targets provided by user (Including Call Center)
 const BRANCH_TARGETS = {
     "Crispy Chicken Hamdan": 27097,
     "Crispy Chicken Shabia": 25806,
@@ -303,7 +309,8 @@ const BRANCH_TARGETS = {
     "Crispy Chicken Satwa": 20968,
     "Crispy Chicken Electra": 32258,
     "Crispy Chicken Rigga": 26290,
-    "Crispy Chicken Majaz": 12903
+    "Crispy Chicken Majaz": 12903,
+    "Crispy Chicken Call Center": 8548
 };
 
 // --- INITIALIZATION ---
@@ -386,7 +393,20 @@ function renderKPIs(data) {
     const totalTarget = data.reduce((sum, i) => sum + i.target, 0);
     const achievement = totalTarget ? Math.round((totalSales/totalTarget)*100) : 0;
 
+    // Calculate Call Center Aggregate (Sum of Delivery from ALL branches)
+    const totalDelivery = data.reduce((sum, i) => sum + i.delivery, 0);
+    const callCenterTarget = 8548; // Daily target as requested
+    const callCenterAch = Math.round((totalDelivery / callCenterTarget) * 100);
+
     document.getElementById('kpiSection').innerHTML = `
+        <div class="kpi-card aggregate">
+            <i class="fas fa-headset kpi-icon"></i>
+            <div class="kpi-title">Call Center (Delivery Agg.)</div>
+            <div class="kpi-value" style="color:var(--warning-color)">AED ${totalDelivery.toLocaleString()}</div>
+            <div class="kpi-sub">
+                <strong>${callCenterAch}%</strong> of Target (8,548)
+            </div>
+        </div>
         <div class="kpi-card">
             <i class="fas fa-coins kpi-icon"></i>
             <div class="kpi-title">Total Sales</div>
@@ -401,7 +421,7 @@ function renderKPIs(data) {
         </div>
         <div class="kpi-card">
             <i class="fas fa-bullseye kpi-icon"></i>
-            <div class="kpi-title">Achievement</div>
+            <div class="kpi-title">Total Achievement</div>
             <div class="kpi-value" style="color:${achievement>=100?'var(--success-color)':'var(--primary-color)'}">${achievement}%</div>
             <div class="kpi-sub">Target: AED ${totalTarget.toLocaleString()}</div>
         </div>
